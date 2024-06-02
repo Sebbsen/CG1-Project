@@ -1,12 +1,28 @@
 'use strict'
 
 let init = async function () {
+    console.log('start');
+    let canvas = document.getElementById('cg1-canvas');
+    /**
+     * @type {WebGLRenderingContext}
+     */
+    let gl = canvas.getContext('webgl');
+
+    if (!gl) {
+        console.log('WebGL not supported, falling back on experimental-webgl');
+    }
+
+
+
     /* CAMERA MOVEMENT START */
     // init camera vars
     let cameraX = 0; 
     let cameraY = 0; 
     let cameraZ = -8; 
     let speed = 0.05;
+    let cameraRotX = 0;
+    let cameraRotY = 0;
+    let sensitivity = 0.005;
 
     // add keyboard listeners
     let keys = {};
@@ -18,19 +34,26 @@ let init = async function () {
     window.addEventListener('keyup', function(event) {
         keys[event.key] = false;
     });
-    /* CAMERA MOVEMENT END */
-    
-    
-    console.log('start');
-    let canvas = document.getElementById('cg1-canvas');
-    /**
-     * @type {WebGLRenderingContext}
-     */
-    let gl = canvas.getContext('webgl');
 
-    if (!gl) {
-        console.log('WebGL not supported, falling back on experimental-webgl');
-    }
+    // add mouse listener
+    // update camera rotation based on mouse movement
+    let lastMouseX = null;
+    let lastMouseY = null;
+
+    canvas.addEventListener('mousemove', function(event) {
+        if (lastMouseX !== null && lastMouseY !== null) {
+            let deltaX = event.clientX - lastMouseX;
+            let deltaY = event.clientY - lastMouseY;
+
+            cameraRotX += deltaX * sensitivity;
+            cameraRotY -= deltaY * sensitivity;
+        }
+
+        lastMouseX = event.clientX;
+        lastMouseY = event.clientY;
+        console.log(cameraRotX, cameraRotY);
+    });
+    /* CAMERA MOVEMENT END */
 
 
     
@@ -345,12 +368,11 @@ let init = async function () {
     let projMatrix = new Float32Array(16);
 
     identity(worldMatrix);
-    //mat4.lookAt(viewMatrix, [0, 0, -8], [0, 0, 0], [0, 1, 0]);
-    viewMatrix = lookAt(viewMatrix, [0, 0, -10], [0, 0, 0], [0, 1, 0]);
+    mat4.lookAt(viewMatrix, [0, 0, -8], [0, 0, 0], [0, 1, 0]);
+    //viewMatrix = lookAt(viewMatrix, [0, 0, -10], [0, 0, 0], [0, 1, 0]);
 
     mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.width / canvas.height, 0.1, 1000.0);
     //projMatrix = perspective(projMatrix, glMatrix.toRadian(45), canvas.width / canvas.height, 0.1, 1000.0);
-    debugger
 
 
     gl.uniformMatrix4fv(mWorldLocation, gl.FALSE, worldMatrix);
@@ -380,8 +402,21 @@ let init = async function () {
             cameraX -= speed;
         }
 
+        // Update camera rotation based on mouse input
+        let cameraDirection = [
+            Math.sin(cameraRotX),
+            Math.cos(cameraRotX) * Math.sin(cameraRotY),
+            Math.cos(cameraRotX) * Math.cos(cameraRotY)
+        ];
+    
+        let centerX = cameraX + cameraDirection[0];
+        //let centerY = 0;
+        //let centerZ = 0;
+        let centerY = cameraY - cameraDirection[1];
+        let centerZ = cameraZ + cameraDirection[2];
+
         // Update camera view matrix
-        viewMatrix = lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [cameraX, cameraY, cameraZ + 1], [0, 1, 0]);
+        viewMatrix = lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [centerX, centerY, centerZ + 1], [0, 1, 0]);
         gl.uniformMatrix4fv(mViewLocation, gl.FALSE, viewMatrix);
         /* CAMERA MOVEMENT END */
 
