@@ -391,21 +391,25 @@ let init = async function () {
     mat4.identity(identityMatrix);
     function loop() {
         angle = performance.now() / 1000 / 6 * 2 * Math.PI; // 6 Sekunden für eine Umdrehung
-        mat4.rotate(worldMatrix, identityMatrix, angle, [0, 1, 0]);
+        mat4.rotate(worldMatrix, identityMatrix, 0, [0, 1, 0]);
         gl.uniformMatrix4fv(mWorldLocation, gl.FALSE, worldMatrix);
         /* CAMERA MOVEMENT START */
         // Update camera position based on WASD input
         if (keys['w']) {
-            cameraZ += speed;
+            cameraZ += speed * Math.cos(cameraRotX);
+            cameraX += speed * Math.sin(cameraRotX);
         }
         if (keys['s']) {
-            cameraZ -= speed;
+            cameraZ -= speed * Math.cos(cameraRotX);
+            cameraX -= speed * Math.sin(cameraRotX);
         }
         if (keys['a']) {
-            cameraX += speed;
+            cameraX += speed * Math.cos(cameraRotX);
+            cameraZ -= speed * Math.sin(cameraRotX);
         }
         if (keys['d']) {
-            cameraX -= speed;
+            cameraX -= speed * Math.cos(cameraRotX);
+            cameraZ += speed * Math.sin(cameraRotX);
         }
 
         // Update camera rotation based on mouse input
