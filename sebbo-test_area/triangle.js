@@ -36,23 +36,29 @@ let init = async function () {
     });
 
     // add mouse listener
+    // lock pointer in canvas (for free mouse movement)
     // update camera rotation based on mouse movement
-    let lastMouseX = null;
-    let lastMouseY = null;
-
-    canvas.addEventListener('mousemove', function(event) {
-        if (lastMouseX !== null && lastMouseY !== null) {
-            let deltaX = event.clientX - lastMouseX;
-            let deltaY = event.clientY - lastMouseY;
-
-            cameraRotX += deltaX * sensitivity;
-            cameraRotY -= deltaY * sensitivity;
-        }
-
-        lastMouseX = event.clientX;
-        lastMouseY = event.clientY;
-        console.log(cameraRotX, cameraRotY);
+    canvas.addEventListener('click', function() {
+        canvas.requestPointerLock();
     });
+    
+    document.addEventListener('pointerlockchange', function() {
+        if (document.pointerLockElement === canvas) {
+            console.log('Pointer locked');
+            document.addEventListener('mousemove', updateCameraRotation);
+        } else {
+            console.log('Pointer unlocked');
+            document.removeEventListener('mousemove', updateCameraRotation);
+        }
+    });
+
+    function updateCameraRotation(event) {
+        let deltaX = event.movementX;
+        let deltaY = event.movementY;
+    
+        cameraRotX += deltaX * sensitivity;
+        cameraRotY -= deltaY * sensitivity;
+    }
     /* CAMERA MOVEMENT END */
 
 
