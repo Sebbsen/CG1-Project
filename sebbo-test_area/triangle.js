@@ -1,6 +1,26 @@
 'use strict'
 
 let init = async function () {
+    /* CAMERA MOVEMENT START */
+    // init camera vars
+    let cameraX = 0; 
+    let cameraY = 0; 
+    let cameraZ = -8; 
+    let speed = 0.05;
+
+    // add keyboard listeners
+    let keys = {};
+
+    window.addEventListener('keydown', function(event) {
+        keys[event.key] = true;
+    });
+
+    window.addEventListener('keyup', function(event) {
+        keys[event.key] = false;
+    });
+    /* CAMERA MOVEMENT END */
+    
+    
     console.log('start');
     let canvas = document.getElementById('cg1-canvas');
     /**
@@ -345,8 +365,25 @@ let init = async function () {
         angle = performance.now() / 1000 / 6 * 2 * Math.PI; // 6 Sekunden für eine Umdrehung
         mat4.rotate(worldMatrix, identityMatrix, angle, [0, 1, 0]);
         gl.uniformMatrix4fv(mWorldLocation, gl.FALSE, worldMatrix);
+        /* CAMERA MOVEMENT START */
+        // Update camera position based on WASD input
+        if (keys['w']) {
+            cameraZ += speed;
+        }
+        if (keys['s']) {
+            cameraZ -= speed;
+        }
+        if (keys['a']) {
+            cameraX += speed;
+        }
+        if (keys['d']) {
+            cameraX -= speed;
+        }
 
+        // Update camera view matrix
+        viewMatrix = lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [cameraX, cameraY, cameraZ + 1], [0, 1, 0]);
         gl.uniformMatrix4fv(mViewLocation, gl.FALSE, viewMatrix);
+        /* CAMERA MOVEMENT END */
 
         gl.clearColor(0.75, 0.85, 0.8, 1.0);
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
