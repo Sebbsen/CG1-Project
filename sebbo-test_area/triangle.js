@@ -62,160 +62,6 @@ let init = async function () {
     /* CAMERA MOVEMENT END */
 
 
-    
-    // my Matrix things
-    function matrixMultiply4x4(a, b) {
-        const out = new Float32Array(16);
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 4; j++) {
-                out[i + j * 4] = 0;
-                for (let k = 0; k < 4; k++) {
-                    out[i + j * 4] += a[i + k * 4] * b[k + j * 4];
-                }
-            }
-        }
-        return out;
-    }
-
-    function identity() {
-        // einheitsmatrix
-        // 1  0  0  0
-        // 0  2  0  0
-        // 0  0  3  0
-        // 0  0  0  4
-        const result = new Float32Array(16);
-        result[0] = 1;
-        result[5] = 1;
-        result[10] = 1;
-        result[15] = 1;
-        return result;
-    }
-
-
-    const translate = (inMat, translationsVector) => {
-        // translate teil der Matrix
-        // 1  0  0  a
-        // 0  1  0  b
-        // 0  0  1  c
-        // 0  0  0  1
-        const translationsmatrix = identity();
-        // translate teil der Matrix anpassen
-        translationsmatrix[12] = translationsVector[0];
-        translationsmatrix[13] = translationsVector[1];
-        translationsmatrix[14] = translationsVector[2];
-        const out = matrixMultiply4x4(translationsmatrix, inMat);
-        return out;
-    }
-
-
-    const scale = (out, inMat, skalierungsVector) => {
-        // scale teil der Matrix
-        // a  0  0  0
-        // 0  b  0  0
-        // 0  0  c  0
-        // 0  0  0  1
-        const skalierungsmatrix = identity();
-        // scale teil der Matrix anpassen
-        skalierungsmatrix[0] = skalierungsVector[0];
-        skalierungsmatrix[5] = skalierungsVector[1];
-        skalierungsmatrix[10] = skalierungsVector[2];
-        out = matrixMultiply4x4(skalierungsmatrix, inMat);
-    }
-
-    const rotatez = (out, inMat, rotateAngleZ) => {
-        // rotatez teil der Matrix
-        // a  c  0  0
-        // b  d  0  0
-        // 0  0  1  0
-        // 0  0  0  2
-        const rotateMat = identity();
-        const c = Math.cos(rotateAngleZ);
-        const s = Math.sin(rotateAngleZ);
-
-        rotateMat[0] = c;
-        rotateMat[1] = s;
-        rotateMat[4] = -s;
-        rotateMat[5] = c;
-        return matrixMultiply4x4(rotateMat, inMat);
-    }
-
-    const VecCross = (a, b) => {
-        return [
-            a[1] * b[2] - a[2] * b[1], 
-            a[2] * b[0] - a[0] * b[2], 
-            a[0] * b[1] - a[1] * b[0]
-        ];
-    }
-
-    const VecMinus = (a, b) => {
-        return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-    }
-
-    const VecNormalize = (a) => {
-        const length = Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-        return [a[0] / length, a[1] / length, a[2] / length];
-    }
-
-    const VecSkalar = (a,b) => {
-        let result = a[0]*b[0] + a[1]*b[1] + a[2]*b[2]
-        return result;
-    }
-
-    const VecMultipl = (x, v) => {
-        return [
-            x * v[0],
-            x * v[1],
-            x * v[2],
-        ]
-    }
-
-    const lookAt = (out, eye, look, up) => {
-        // 𝑛 = Eye − Lookc
-        // 𝑢 = Up × 𝑛
-        // 𝑣 = 𝑛 × 𝑢
-        const n = VecMinus(eye, look);
-        const u = VecCross(up, n);
-        const v = VecCross(n, u);
-        // Drehung im Raum, sodass die Sichtachse 𝑛 in 𝑧 gedreht wird und der Vektor 𝑣 parallel zu 𝑦 ist
-        let nNormal = VecNormalize(n);
-        let uNormal = VecNormalize(u);
-        let vNormal = VecNormalize(v);
-        
-        let translateVec = [
-            VecSkalar(VecMultipl(-1, uNormal), eye),
-            VecSkalar(VecMultipl(-1, vNormal), eye),
-            VecSkalar(VecMultipl(-1, nNormal), eye)
-        ];
-
-        let viewMatrix = [
-            uNormal[0], vNormal[0], nNormal[0], 0,
-            uNormal[1], vNormal[1], nNormal[1], 0,
-            uNormal[2], vNormal[2], nNormal[2], 0,
-            translateVec[0], translateVec[1],translateVec[2], 1
-        ]
-
-        viewMatrix = new Float32Array(viewMatrix);
-
-        out = viewMatrix
-        return out;
-    }
-
-    const perspective = (out, fovy, aspect, near, far) => {
-        const f = 1.0 / Math.tan((fovy / 2) * (Math.PI / 180));
-        const nf = 1 / (near - far);
-        let projectionMatrix = [
-            f / aspect, 0, 0, 0,
-            0, f, 0, 0,
-            0, 0, (far + near) * nf, -1,
-            0, 0, (2 * far * near) * nf, 0
-        ]
-
-        //TODO IN COLS
-        projectionMatrix = new Float32Array(projectionMatrix);
-        out = projectionMatrix;
-        return projectionMatrix;
-    }
-
 
     // create shader program
     let vertexTextResponse = await fetch('./vertexShader.glsl');
@@ -373,7 +219,7 @@ let init = async function () {
     let viewMatrix = new Float32Array(16);
     let projMatrix = new Float32Array(16);
 
-    identity(worldMatrix);
+    mat4.identity(worldMatrix);
     mat4.lookAt(viewMatrix, [0, 0, -8], [0, 0, 0], [0, 1, 0]);
     //viewMatrix = lookAt(viewMatrix, [0, 0, -10], [0, 0, 0], [0, 1, 0]);
 
@@ -426,7 +272,7 @@ let init = async function () {
         let centerZ = cameraZ + cameraDirection[2];
 
         // Update camera view matrix
-        viewMatrix = lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [centerX, centerY, centerZ + 1], [0, 1, 0]);
+        viewMatrix = mat4.lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [centerX, centerY, centerZ + 1], [0, 1, 0]);
         gl.uniformMatrix4fv(mViewLocation, gl.FALSE, viewMatrix);
         /* CAMERA MOVEMENT END */
 
