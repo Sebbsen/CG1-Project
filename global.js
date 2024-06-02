@@ -11,8 +11,8 @@ export class Global {
     static far = 1000.0;
 
     // Matrizen
-    static viewMatrix = this.initViewMatrix();
-    static projectionMatrix = this.initProjectionMatrix();
+    static viewMatrix;
+    static projectionMatrix;
 
     // Provisorische Liste an opaken Objekten
     static opaqueObjects = [];
@@ -25,11 +25,11 @@ export class Global {
     }
 
     static initViewMatrix() {
-        return this.lookAt(new Float32Array(this.cameraPosition), new Float32Array(this.cameraLookPosition), new Float32Array(this.cameraUpDirection));
+        this.viewMatrix = this.lookAt(new Float32Array(this.cameraPosition), new Float32Array(this.cameraLookPosition), new Float32Array(this.cameraUpDirection));
     }
 
     static initProjectionMatrix() {
-        return this.perspective(this.yFOV, this.aspectRatio, this.near, this.far);
+        this.projectionMatrix = this.perspective(this.yFOV, this.aspectRatio, this.near, this.far);
     }
 
     static lookAt(eye, look, up) {
@@ -78,7 +78,7 @@ export class Global {
         var f = 1.0 / Math.tan(fieldOfViewInRadians / 2);
         var rangeInv = 1 / (near - far);
     
-        return [
+        return new Float32Array([
             f / aspectRatio,
             0,
             0,
@@ -95,7 +95,7 @@ export class Global {
             0,
             near * far * rangeInv * 2,
             0,
-        ];
+        ]);
     }
 
     static setCameraPosition(x, y, z) {

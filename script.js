@@ -18,12 +18,13 @@ if (!gl) {
 	console.error("WebGL does not work and might not be supported");
 }
 
+let then = window.performance.now();
+
 async function init() {
-	Global.init();
-	Global.cameraPosition = [-5, 4, -10];
+	Global.cameraPosition = [0, 5, -10];
 	Global.cameraLookPosition = [0, 0, 0];
-	Global.viewMatrix = Global.initViewMatrix();
 	Global.setAspectRation(canvas.width, canvas.height);
+	Global.init();
 
 	gl.enable(gl.DEPTH_TEST);
 	gl.enable(gl.CULL_FACE);
@@ -57,14 +58,40 @@ async function init() {
 	);
 	await cube.prepare();
 
+	let suzanne = new GameObject(defaultProgram, "./assets/models/suzanne.obj",
+	[0, 0, 3],
+	[0, 0, 0],
+	[1, 1, 1],
+	true,
+	false);
+	await suzanne.prepare();
+
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	teapot.draw();
 	cube.draw();
+	suzanne.draw();
 
-	async function loop() {
+	async function loop(now) {
+		Global.cameraPosition = [Math.sin(now * 0.001) * 10, 3, Math.cos(now * 0.001) * 10];
+		Global.initViewMatrix();
+		
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		teapot.draw();
+		cube.draw();
+		suzanne.draw();
+
+		updateDebugInfoPanel(now);
 
 		requestAnimationFrame(loop);
 	}
 
-	// requestAnimationFrame(loop);
+	requestAnimationFrame(loop);
+}
+
+function updateDebugInfoPanel(now) {
+	now *= 0.001;
+	const deltaTime = now - then;
+	then = now;
+	const fps = 1 / deltaTime;
+	document.getElementById("fps").textContent = "FPS: " + fps.toFixed(0);
 }

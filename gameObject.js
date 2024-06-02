@@ -31,9 +31,6 @@ export class GameObject {
 
 		this.worldMatrix = new Float32Array(16);
 		Mat4.identity(this.worldMatrix);
-
-
-		// this.prepare(program, pathOBJ);
 	}
 
 	draw() {
@@ -245,6 +242,7 @@ export class GameObject {
 			"projectionMatrix"
 		);
 
+		Mat4.identity(this.worldMatrix);
 		this.translate(this.translation[0], this.translation[1], this.translation[2]);
 
 		gl.uniformMatrix4fv(
