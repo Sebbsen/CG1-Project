@@ -1,6 +1,7 @@
 import { Global } from "./global.js";
 import { createProgram } from "./program.js";
 import { GameObject } from "./gameObject.js";
+import { initCamera, updateCamera } from "./camera.js";
 
 ("use strict");
 
@@ -21,6 +22,7 @@ if (!gl) {
 let then = window.performance.now();
 
 async function init() {
+	initCamera(canvas);
 	Global.cameraPosition = [0, 5, -10];
 	Global.cameraLookPosition = [0, 0, 0];
 	Global.setAspectRation(canvas.width, canvas.height);
@@ -72,8 +74,8 @@ async function init() {
 	suzanne.draw();
 
 	async function loop(now) {
-		Global.cameraPosition = [Math.sin(now * 0.001) * 10, 3, Math.cos(now * 0.001) * 10];
-		Global.initViewMatrix();
+		// TODO: replace mat4 with own mat implementation
+		updateCamera(Global.viewMatrix, mat4);
 		
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		teapot.draw();
