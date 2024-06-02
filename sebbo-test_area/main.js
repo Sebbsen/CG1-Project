@@ -1,4 +1,6 @@
 'use strict'
+import { initCamera, updateCamera, cameraX, cameraY, cameraZ, cameraRotX, cameraRotY, speed, sensitivity, keys } from './camera.js';
+
 
 let init = async function () {
     console.log('start');
@@ -12,59 +14,10 @@ let init = async function () {
         console.log('WebGL not supported, falling back on experimental-webgl');
     }
 
-
-
-    /* CAMERA MOVEMENT START */
-    // init camera vars
-    let cameraX = 0; 
-    let cameraY = 0; 
-    let cameraZ = -8; 
-    let speed = 0.05;
-    let cameraRotX = 0;
-    let cameraRotY = 0;
-    let sensitivity = 0.005;
-
-    // add keyboard listeners
-    let keys = {};
-
-    window.addEventListener('keydown', function(event) {
-        keys[event.key] = true;
-    });
-
-    window.addEventListener('keyup', function(event) {
-        keys[event.key] = false;
-    });
-
-    // add mouse listener
-    // lock pointer in canvas (for free mouse movement)
-    // update camera rotation based on mouse movement
-    canvas.addEventListener('click', function() {
-        canvas.requestPointerLock();
-    });
-    
-    document.addEventListener('pointerlockchange', function() {
-        if (document.pointerLockElement === canvas) {
-            console.log('Pointer locked');
-            document.addEventListener('mousemove', updateCameraRotation);
-        } else {
-            console.log('Pointer unlocked');
-            document.removeEventListener('mousemove', updateCameraRotation);
-        }
-    });
-
-    function updateCameraRotation(event) {
-        let deltaX = event.movementX;
-        let deltaY = event.movementY;
-    
-        cameraRotX += deltaX * sensitivity;
-        cameraRotY -= deltaY * sensitivity;
-    }
-    /* CAMERA MOVEMENT END */
-
-
+    initCamera(canvas);
 
     // create shader program
-    let vertexTextResponse = await fetch('./vertexShader.glsl');
+    let vertexTextResponse = await fetch('./shaders/vertexShader.glsl');
     let vertexText = await vertexTextResponse.text();
 
     let vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -75,7 +28,7 @@ let init = async function () {
         console.error('ERROR compiling vertex shader!', gl.getShaderInfoLog(vertexShader));
     }
 
-    let fragmentTextResponse = await fetch('./fragmentShader.glsl');
+    let fragmentTextResponse = await fetch('./shaders/fragmentShader.glsl');
     let fragmentText = await fragmentTextResponse.text();
 
     let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -219,10 +172,6 @@ let init = async function () {
     let viewMatrix = new Float32Array(16);
     let projMatrix = new Float32Array(16);
 
-    mat4.identity(worldMatrix);
-    mat4.lookAt(viewMatrix, [0, 0, -8], [0, 0, 0], [0, 1, 0]);
-    //viewMatrix = lookAt(viewMatrix, [0, 0, -10], [0, 0, 0], [0, 1, 0]);
-
     mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.width / canvas.height, 0.1, 1000.0);
     //projMatrix = perspective(projMatrix, glMatrix.toRadian(45), canvas.width / canvas.height, 0.1, 1000.0);
 
@@ -239,42 +188,8 @@ let init = async function () {
         angle = performance.now() / 1000 / 6 * 2 * Math.PI; // 6 Sekunden für eine Umdrehung
         mat4.rotate(worldMatrix, identityMatrix, 0, [0, 1, 0]);
         gl.uniformMatrix4fv(mWorldLocation, gl.FALSE, worldMatrix);
-        /* CAMERA MOVEMENT START */
-        // Update camera position based on WASD input
-        if (keys['w']) {
-            cameraZ += speed * Math.cos(cameraRotX);
-            cameraX += speed * Math.sin(cameraRotX);
-        }
-        if (keys['s']) {
-            cameraZ -= speed * Math.cos(cameraRotX);
-            cameraX -= speed * Math.sin(cameraRotX);
-        }
-        if (keys['a']) {
-            cameraX += speed * Math.cos(cameraRotX);
-            cameraZ -= speed * Math.sin(cameraRotX);
-        }
-        if (keys['d']) {
-            cameraX -= speed * Math.cos(cameraRotX);
-            cameraZ += speed * Math.sin(cameraRotX);
-        }
 
-        // Update camera rotation based on mouse input
-        let cameraDirection = [
-            Math.sin(cameraRotX),
-            Math.cos(cameraRotX) * Math.sin(cameraRotY),
-            Math.cos(cameraRotX) * Math.cos(cameraRotY)
-        ];
-    
-        let centerX = cameraX + cameraDirection[0];
-        //let centerY = 0;
-        //let centerZ = 0;
-        let centerY = cameraY - cameraDirection[1];
-        let centerZ = cameraZ + cameraDirection[2];
-
-        // Update camera view matrix
-        viewMatrix = mat4.lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [centerX, centerY, centerZ + 1], [0, 1, 0]);
-        gl.uniformMatrix4fv(mViewLocation, gl.FALSE, viewMatrix);
-        /* CAMERA MOVEMENT END */
+        updateCamera(viewMatrix, mat4, gl, mViewLocation);
 
         gl.clearColor(0.75, 0.85, 0.8, 1.0);
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
