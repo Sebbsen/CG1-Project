@@ -4,7 +4,7 @@ export let cameraZ = -8;
 export let cameraRotX = 0;
 export let cameraRotY = 0;
 export let speed = 0.05;
-export let sensitivity = 0.005;
+export let sensitivity = 0.001;
 export let keys = {};
 
 export function initCamera(canvas) {
@@ -35,38 +35,43 @@ function updateCameraRotation(event) {
     let deltaX = event.movementX;
     let deltaY = event.movementY;
 
-    cameraRotX += deltaX * sensitivity;
+    cameraRotX -= deltaX * sensitivity;
     cameraRotY -= deltaY * sensitivity;
+
+    // Clamp the vertical rotation to prevent flipping
+    cameraRotY = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotY));
 }
 
 export function updateCamera(viewMatrix, mat4, gl, mViewLocation) {
     if (keys['w']) {
-        cameraZ += speed * Math.cos(cameraRotX);
         cameraX += speed * Math.sin(cameraRotX);
+        cameraZ += speed * Math.cos(cameraRotX);
     }
     if (keys['s']) {
-        cameraZ -= speed * Math.cos(cameraRotX);
         cameraX -= speed * Math.sin(cameraRotX);
-    }
-    if (keys['a']) {
-        cameraX += speed * Math.cos(cameraRotX);
-        cameraZ -= speed * Math.sin(cameraRotX);
+        cameraZ -= speed * Math.cos(cameraRotX);
     }
     if (keys['d']) {
         cameraX -= speed * Math.cos(cameraRotX);
         cameraZ += speed * Math.sin(cameraRotX);
     }
+    if (keys['a']) {
+        cameraX += speed * Math.cos(cameraRotX);
+        cameraZ -= speed * Math.sin(cameraRotX);
+    }
 
+    // Calculate the direction the camera is looking
     let cameraDirection = [
-        Math.sin(cameraRotX),
-        Math.cos(cameraRotX) * Math.sin(cameraRotY),
+        Math.sin(cameraRotX) * Math.cos(cameraRotY),
+        Math.sin(cameraRotY),
         Math.cos(cameraRotX) * Math.cos(cameraRotY)
     ];
 
     let centerX = cameraX + cameraDirection[0];
-    let centerY = cameraY - cameraDirection[1];
+    let centerY = cameraY + cameraDirection[1];
     let centerZ = cameraZ + cameraDirection[2];
 
-    mat4.lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [centerX, centerY, centerZ + 1], [0, 1, 0]);
+    // Update the view matrix
+    mat4.lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [centerX, centerY, centerZ], [0, 1, 0]);
     gl.uniformMatrix4fv(mViewLocation, gl.FALSE, viewMatrix);
 }
