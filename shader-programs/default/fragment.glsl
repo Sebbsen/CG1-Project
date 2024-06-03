@@ -2,7 +2,15 @@ precision mediump float;
 
 varying vec3 fragNormal;
 
+uniform bool uPicking;
+uniform vec3 uPickingColor;
+
 void main() {
+    if (uPicking) {
+        gl_FragColor = vec4(uPickingColor, 1.0);
+        return;
+    }
+    
     vec3 normal = normalize(fragNormal);
 
     // als uniform übergeben

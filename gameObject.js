@@ -47,6 +47,17 @@ export class GameObject {
 		gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
 	}
 
+	drawWithPickingID(id) {
+		gl.useProgram(this.program);
+		this.loadAttributes();
+		this.loadUniforms();
+
+		gl.uniform1i(gl.getUniformLocation(this.program, "uPicking"), 1);
+		gl.uniform3fv(gl.getUniformLocation(this.program, "uPickingColor"), [((id >> 16) & 0xFF) / 255, ((id >> 8) & 0xFF) / 255, (id & 0xFF) / 255,]);
+		gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
+		gl.uniform1i(gl.getUniformLocation(this.program, "uPicking"), 0);
+	}
+
 	async prepare() {
 		// gl.useProgram(this.program);
 
