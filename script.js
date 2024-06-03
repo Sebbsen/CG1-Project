@@ -38,34 +38,43 @@ async function init() {
 		"./shader-programs/default/fragment.glsl"
 	);
 
-	let teapot = new GameObject(
-		defaultProgram,
-		"./assets/models/teapot.obj",
-		[0, -2, 0],
-		[0, 0, 0],
-		[1, 1, 1],
-		false,
-		false
-	);
+	let teapot = new GameObject({
+		program: defaultProgram,
+		objFile: "./assets/models/teapot.obj",
+		translation: [0, -2, 0],
+		rotation: [0, 0, 0],
+		scale: [1, 1, 1],
+		faceCulling: false,
+		transparent: false,
+		id: 1,
+		name: "Teapot"
+	});
 	await teapot.prepare();
-
-	let cube = new GameObject(
-		defaultProgram,
-		"./assets/models/cube.obj",
-		[2, 1, 0],
-		[0, 0, 0],
-		[1, 1, 1],
-		true,
-		false
-	);
+	
+	let cube = new GameObject({
+		program: defaultProgram,
+		objFile: "./assets/models/cube.obj",
+		translation: [2, 1, 0],
+		rotation: [0, 0, 0],
+		scale: [1, 1, 1],
+		faceCulling: true,
+		transparent: false,
+		id: 2,
+		name: "Cube"
+	});
 	await cube.prepare();
-
-	let suzanne = new GameObject(defaultProgram, "./assets/models/suzanne.obj",
-		[0, 0, 3],
-		[0, 0, 0],
-		[1, 1, 1],
-		true,
-		false);
+	
+	let suzanne = new GameObject({
+		program: defaultProgram,
+		objFile: "./assets/models/suzanne.obj",
+		translation: [0, 0, 3],
+		rotation: [0, 0, 0],
+		scale: [1, 1, 1],
+		faceCulling: true,
+		transparent: false,
+		id: 3,
+		name: "Suzanne"
+	});
 	await suzanne.prepare();
 
 	// Create Picking Texture and Framebuffer

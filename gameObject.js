@@ -7,7 +7,9 @@ export class GameObject {
 	 *
 	 * @param {WebGLProgram} program
 	 */
-	constructor(program, objFile, translation, rotation, scale, faceCulling, transparent) {
+	constructor({name = 'noName', id = 0, program, objFile, translation, rotation, scale, faceCulling, transparent, }) {
+		this.name = name;
+		this.id = id;
 		this.program = program;
 		this.objFile = objFile;
 		this.translation = translation;
