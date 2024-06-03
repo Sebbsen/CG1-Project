@@ -88,8 +88,8 @@ async function init() {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, pickingFramebuffer);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		gameObjects.forEach((obj, index) => {
-			obj.drawWithPickingID(index + 1);
+		gameObjects.forEach((obj) => {
+			obj.drawPicking();
 		});
 
 		const pixels = new Uint8Array(4);
