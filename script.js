@@ -98,7 +98,9 @@ async function init() {
 
 		let color = pixels;
 		const id = (color[0] << 16) | (color[1] << 8) | color[2];
-		console.log('Picked ID:', id);
+		const pickedObj = gameObjects.find(obj => obj.id === id);
+		console.log('Picked ID:', pickedObj.id);
+		document.getElementById("picked_obj").textContent = "Picked Obj: " + pickedObj.name;
 	}
 
 	function createPickingTexture(gl, width, height) {
