@@ -61,11 +61,11 @@ async function init() {
 	await cube.prepare();
 
 	let suzanne = new GameObject(defaultProgram, "./assets/models/suzanne.obj",
-	[0, 0, 3],
-	[0, 0, 0],
-	[1, 1, 1],
-	true,
-	false);
+		[0, 0, 3],
+		[0, 0, 0],
+		[1, 1, 1],
+		true,
+		false);
 	await suzanne.prepare();
 
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -76,7 +76,7 @@ async function init() {
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
 		updateCamera(Global.viewMatrix, mat4);
-		
+
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		teapot.draw();
 		cube.draw();
