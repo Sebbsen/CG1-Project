@@ -38,62 +38,44 @@ async function init() {
 		"./shader-programs/default/fragment.glsl"
 	);
 
-	let teapot = new GameObject({
-		program: defaultProgram,
-		objFile: "./assets/models/teapot.obj",
-		translation: [0, -2, 0],
-		rotation: [0, 0, 0],
-		scale: [1, 1, 1],
-		faceCulling: false,
-		transparent: false,
-		id: 1,
-		name: "Teapot"
-	});
-	await teapot.prepare();
-	
-	let cube = new GameObject({
-		program: defaultProgram,
-		objFile: "./assets/models/cube.obj",
-		translation: [2, 1, 0],
-		rotation: [0, 0, 0],
-		scale: [1, 1, 1],
-		faceCulling: true,
-		transparent: false,
-		id: 2,
-		name: "Cube"
-	});
-	await cube.prepare();
-	
-	let suzanne = new GameObject({
-		program: defaultProgram,
-		objFile: "./assets/models/suzanne.obj",
-		translation: [0, 0, 3],
-		rotation: [0, 0, 0],
-		scale: [1, 1, 1],
-		faceCulling: true,
-		transparent: false,
-		id: 3,
-		name: "Suzanne"
-	});
-	await suzanne.prepare();
+	const response = await fetch("./gameObjects.json");
+	const gameObjectsData = await response.json();
+
+	const gameObjects = await Promise.all(gameObjectsData.map(async (data) => {
+		let program = defaultProgram;
+		if (data.program === "defaultProgram") {
+			program = defaultProgram;
+		}
+		// Add more conditions if there are more programs
+
+		let gameObject = new GameObject({
+			program: program,
+			objFile: data.objFile,
+			translation: data.translation,
+			rotation: data.rotation,
+			scale: data.scale,
+			faceCulling: data.faceCulling,
+			transparent: data.transparent,
+			id: data.id,
+			name: data.name
+		});
+		await gameObject.prepare();
+		return gameObject;
+	}));
 
 	// Create Picking Texture and Framebuffer
 	const pickingTexture = createPickingTexture(gl, canvas.width, canvas.height);
 	const pickingFramebuffer = createPickingFramebuffer(gl, pickingTexture);
 
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	teapot.draw();
-	cube.draw();
-	suzanne.draw();
+	gameObjects.forEach(obj => obj.draw());
 
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
 		updateCamera(Global.viewMatrix, mat4);
 
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-		teapot.draw();
-		cube.draw();
-		suzanne.draw();
+		gameObjects.forEach(obj => obj.draw());
 
 		updateDebugInfoPanel(now);
 
@@ -106,9 +88,9 @@ async function init() {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, pickingFramebuffer);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		teapot.drawWithPickingID(1);
-		cube.drawWithPickingID(2);
-		suzanne.drawWithPickingID(3);
+		gameObjects.forEach((obj, index) => {
+			obj.drawWithPickingID(index + 1);
+		});
 
 		const pixels = new Uint8Array(4);
 		gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
@@ -157,6 +139,4 @@ async function init() {
 		const fps = 1 / deltaTime;
 		document.getElementById("fps").textContent = "FPS: " + fps.toFixed(0);
 	}
-
-
 }
