@@ -2,7 +2,7 @@ import { Global } from "./global.js";
 import { createProgram } from "./program.js";
 import { GameObject } from "./gameObject.js";
 import { initCamera, updateCamera } from "./camera.js";
-import { ObjectPicker } from "./ObjectPicker.js";
+import { ObjectPicker } from "./objectPicker.js";
 import { createNewSkybox, drawNewSkybox } from "./skybox.js";
 
 ("use strict");
