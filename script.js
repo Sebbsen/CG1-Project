@@ -3,6 +3,7 @@ import { createProgram } from "./program.js";
 import { GameObject } from "./gameObject.js";
 import { initCamera, updateCamera } from "./camera.js";
 import { ObjectPicker } from "./ObjectPicker.js";
+import { createNewSkybox, drawNewSkybox } from "./skybox.js";
 
 ("use strict");
 
@@ -15,7 +16,7 @@ let canvas = document.getElementById("canvas");
 
 // Neben webgl gibt es auch webgl2 (mehr Funktionen) und webgpu (neuerer Standard)
 /** @type {WebGLRenderingContext} */
-export let gl = canvas.getContext("webgl");
+export let gl = canvas.getContext("webgl") || canvas.getContext("webgl2");
 if (!gl) {
 	console.error("WebGL does not work and might not be supported");
 }
@@ -67,14 +68,28 @@ async function init() {
 	// Init Object Picker
 	const objectPicker = new ObjectPicker(gl, canvas, gameObjects);
 
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	gameObjects.forEach(obj => obj.draw());
+	// define skybox images
+	const skybox = await createNewSkybox(gl, {
+		negx: 'assets/skybox/nx.png',
+		negy: 'assets/skybox/ny.png',
+		negz: 'assets/skybox/nz.png',
+		posx: 'assets/skybox/px.png',
+		posy: 'assets/skybox/py.png',
+		posz: 'assets/skybox/pz.png',
+	});
 
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
 		updateCamera(Global.viewMatrix, mat4);
-
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		// Draw the skybox first
+		gl.depthFunc(gl.LEQUAL); // Change the depth function to LEQUAL for skybox
+		drawNewSkybox(gl, skybox);
+		gl.clear(gl.DEPTH_BUFFER_BIT); // Clear the depth buffer after drawing the skybox
+
+		// Then draw the game objects
+		gl.depthFunc(gl.LESS); // Restore the depth function
 		gameObjects.forEach(obj => obj.draw());
 
 		updateDebugInfoPanel(now);
@@ -105,3 +120,9 @@ async function init() {
 		document.getElementById("fps").textContent = "FPS: " + fps.toFixed(0);
 	}
 }
+
+// New Skybox functions
+
+
+
+
