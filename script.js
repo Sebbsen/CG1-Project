@@ -2,6 +2,8 @@ import { Global } from "./global.js";
 import { createProgram } from "./program.js";
 import { GameObject } from "./gameObject.js";
 import { initCamera, updateCamera } from "./camera.js";
+import { ObjectPicker } from "./objectPicker.js";
+import { createNewSkybox, drawNewSkybox } from "./skybox.js";
 
 ("use strict");
 
@@ -14,7 +16,7 @@ let canvas = document.getElementById("canvas");
 
 // Neben webgl gibt es auch webgl2 (mehr Funktionen) und webgpu (neuerer Standard)
 /** @type {WebGLRenderingContext} */
-export let gl = canvas.getContext("webgl");
+export let gl = canvas.getContext("webgl") || canvas.getContext("webgl2");
 if (!gl) {
 	console.error("WebGL does not work and might not be supported");
 }
@@ -63,18 +65,31 @@ async function init() {
 		return gameObject;
 	}));
 
-	// Create Picking Texture and Framebuffer
-	const pickingTexture = createPickingTexture(gl, canvas.width, canvas.height);
-	const pickingFramebuffer = createPickingFramebuffer(gl, pickingTexture);
+	// Init Object Picker
+	const objectPicker = new ObjectPicker(gl, canvas, gameObjects);
 
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	gameObjects.forEach(obj => obj.draw());
+	// define skybox images
+	const skybox = await createNewSkybox(gl, {
+		negx: 'assets/skybox/nx.png',
+		negy: 'assets/skybox/ny.png',
+		negz: 'assets/skybox/nz.png',
+		posx: 'assets/skybox/px.png',
+		posy: 'assets/skybox/py.png',
+		posz: 'assets/skybox/pz.png',
+	});
 
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
 		updateCamera(Global.viewMatrix, mat4);
-
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		// Draw the skybox first
+		gl.depthFunc(gl.LEQUAL); // Change the depth function to LEQUAL for skybox
+		drawNewSkybox(gl, skybox);
+		gl.clear(gl.DEPTH_BUFFER_BIT); // Clear the depth buffer after drawing the skybox
+
+		// Then draw the game objects
+		gl.depthFunc(gl.LESS); // Restore the depth function
 		gameObjects.forEach(obj => obj.draw());
 
 		updateDebugInfoPanel(now);
@@ -84,55 +99,18 @@ async function init() {
 
 	requestAnimationFrame(loop);
 
-	function pick(x, y) {
-		gl.bindFramebuffer(gl.FRAMEBUFFER, pickingFramebuffer);
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		gameObjects.forEach((obj) => {
-			obj.drawPicking();
-		});
-
-		const pixels = new Uint8Array(4);
-		gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-		let color = pixels;
-		const id = (color[0] << 16) | (color[1] << 8) | color[2];
-		const pickedObj = gameObjects.find(obj => obj.id === id);
-		console.log('Picked ID:', pickedObj.id);
-		document.getElementById("picked_obj").textContent = "Picked Obj: " + pickedObj.name;
-	}
-
-	function createPickingTexture(gl, width, height) {
-		const pickingTexture = gl.createTexture();
-		gl.bindTexture(gl.TEXTURE_2D, pickingTexture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-		gl.bindTexture(gl.TEXTURE_2D, null);
-		return pickingTexture;
-	}
-
-	function createPickingFramebuffer(gl, pickingTexture) {
-		const pickingFramebuffer = gl.createFramebuffer();
-		gl.bindFramebuffer(gl.FRAMEBUFFER, pickingFramebuffer);
-
-		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, pickingTexture, 0);
-
-		const renderbuffer = gl.createRenderbuffer();
-		gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
-		gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, gl.canvas.width, gl.canvas.height);
-		gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, renderbuffer);
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-		return pickingFramebuffer;
-	}
-
+	//Pick Object
 	canvas.addEventListener('click', (event) => {
-		const x = canvas.width/2;
-		const y = canvas.height/2;
-		pick(x, y);
-	});
+        const x = canvas.width/2;
+        const y = canvas.height/2;
+        const pickedObj = objectPicker.pick(x, y);
+		console.log('Picked Obj:', pickedObj);
+        if (pickedObj) {
+            console.log('Picked ID:', pickedObj.id);
+            document.getElementById("picked_obj").textContent = "Picked Obj: " + pickedObj.name;
+        }
+    });
 
 	function updateDebugInfoPanel(now) {
 		now *= 0.001;
@@ -142,3 +120,9 @@ async function init() {
 		document.getElementById("fps").textContent = "FPS: " + fps.toFixed(0);
 	}
 }
+
+// New Skybox functions
+
+
+
+
