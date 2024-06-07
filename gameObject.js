@@ -61,24 +61,16 @@ export class GameObject {
 	}
 
 	async prepare() {
-		// gl.useProgram(this.program);
-
 		await this.loadModelData(this.objFile);
 		this.prepareBuffer();
-		// this.loadAttributes();
-		// this.loadUniforms();
 	}
 
 	translate(x, y ,z) {
 		this.worldMatrix = Mat4.translate(this.worldMatrix, [x, y, z]);
+	}
 
-		gl.useProgram(this.program);
-
-		gl.uniformMatrix4fv(
-			this.worldMatrixUniformLocation,
-			false,
-			this.worldMatrix
-		);
+	scale(x, y, z) {
+		this.worldMatrix = Mat4.scale(this.worldMatrix, [x, y, z]);
 	}
 
 	rotateX(degrees) {
@@ -255,8 +247,9 @@ export class GameObject {
 			"projectionMatrix"
 		);
 
-		Mat4.identity(this.worldMatrix);
-		this.translate(this.translation[0], this.translation[1], this.translation[2]);
+		// Mat4.identity(this.worldMatrix);
+		// this.scale(this.scale[0], this.scale[1], this.scale[2]);
+		// this.translate(this.translation[0], this.translation[1], this.translation[2]);
 
 		gl.uniformMatrix4fv(
 			this.worldMatrixUniformLocation,

@@ -1,9 +1,11 @@
 import { Global } from "./global.js";
 import { createProgram } from "./program.js";
 import { GameObject } from "./gameObject.js";
-import { initCamera, updateCamera } from "./camera.js";
 import { ObjectPicker } from "./objectPicker.js";
 import { createNewSkybox, drawNewSkybox } from "./skybox.js";
+import { initCamera, sensitivity, updateCamera } from "./camera.js";
+import { SceneGraph } from "./sceneGraph.js";
+import { createPrograms, defaultProgram } from "./shaderPrograms.js";
 
 ("use strict");
 
@@ -34,11 +36,12 @@ async function init() {
 	gl.enable(gl.CULL_FACE);
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-	let defaultProgram = await createProgram(
-		gl,
-		"./shader-programs/default/vertex.glsl",
-		"./shader-programs/default/fragment.glsl"
-	);
+	await createPrograms();
+
+	let sceneGraph = new SceneGraph();
+	// sceneGraph.init("./sceneGraphSolarSystemDemo.json");
+	sceneGraph.init("./sceneGraph.json");
+	console.log(sceneGraph);
 
 	const response = await fetch("./gameObjects.json");
 	const gameObjectsData = await response.json();
@@ -66,7 +69,7 @@ async function init() {
 	}));
 
 	// Init Object Picker
-	const objectPicker = new ObjectPicker(gl, canvas, gameObjects);
+	const objectPicker = new ObjectPicker(gl, canvas, gameObjects); 
 
 	// define skybox images
 	const skybox = await createNewSkybox(gl, {
@@ -81,6 +84,7 @@ async function init() {
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
 		updateCamera(Global.viewMatrix, mat4);
+
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 		// Draw the skybox first
@@ -90,7 +94,8 @@ async function init() {
 
 		// Then draw the game objects
 		gl.depthFunc(gl.LESS); // Restore the depth function
-		gameObjects.forEach(obj => obj.draw());
+
+		sceneGraph.draw();
 
 		updateDebugInfoPanel(now);
 
@@ -120,9 +125,3 @@ async function init() {
 		document.getElementById("fps").textContent = "FPS: " + fps.toFixed(0);
 	}
 }
-
-// New Skybox functions
-
-
-
-

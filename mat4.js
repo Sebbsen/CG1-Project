@@ -105,6 +105,36 @@ export class Mat4 {
 		return result;
 	}
 
+	static multiply(a, b) {
+		let result = new Float32Array(16);
+
+		// 1. Zeile
+		result[0] = a[0]*b[0] + a[4]*b[1] + a[8]*b[2] + a[12]*b[3];
+		result[4] = a[0]*b[4] + a[4]*b[5] + a[8]*b[6] + a[12]*b[7];
+		result[8] = a[0]*b[8] + a[4]*b[9] + a[8]*b[10] + a[12]*b[11];
+		result[12] = a[0]*b[12] + a[4]*b[13] + a[8]*b[14] + a[12]*b[15];
+		
+		// 2. Zeile
+		result[0+1] = a[0+1]*b[0] + a[4+1]*b[1] + a[8+1]*b[2] + a[12+1]*b[3];
+		result[4+1] = a[0+1]*b[4] + a[4+1]*b[5] + a[8+1]*b[6] + a[12+1]*b[7];
+		result[8+1] = a[0+1]*b[8] + a[4+1]*b[9] + a[8+1]*b[10] + a[12+1]*b[11];
+		result[12+1] = a[0+1]*b[12] + a[4+1]*b[13] + a[8+1]*b[14] + a[12+1]*b[15];
+		
+		// 3. Zeile
+		result[0+2] = a[0+2]*b[0] + a[4+2]*b[1] + a[8+2]*b[2] + a[12+2]*b[3];
+		result[4+2] = a[0+2]*b[4] + a[4+2]*b[5] + a[8+2]*b[6] + a[12+2]*b[7];
+		result[8+2] = a[0+2]*b[8] + a[4+2]*b[9] + a[8+2]*b[10] + a[12+2]*b[11];
+		result[12+2] = a[0+2]*b[12] + a[4+2]*b[13] + a[8+2]*b[14] + a[12+2]*b[15];
+		
+		// 4. Zeile
+		result[0+3] = a[0+3]*b[0] + a[4+3]*b[1] + a[8+3]*b[2] + a[12+3]*b[3];
+		result[4+3] = a[0+3]*b[4] + a[4+3]*b[5] + a[8+3]*b[6] + a[12+3]*b[7];
+		result[8+3] = a[0+3]*b[8] + a[4+3]*b[9] + a[8+3]*b[10] + a[12+3]*b[11];
+		result[12+3] = a[0+3]*b[12] + a[4+3]*b[13] + a[8+3]*b[14] + a[12+3]*b[15];
+
+		return result;
+	}
+
 	/**
 	 *
 	 * @param {Float32Array} out
@@ -293,5 +323,13 @@ export class Mat4 {
 			a[2] * b[0] - a[0] * b[2],
 			a[0] * b[1] - a[1] * b[0],
 		];
+	}
+
+	static print(matrix) {
+		console.log("Matrix:");
+		console.log(matrix[0], "\t", matrix[4], "\t", matrix[8], "\t", matrix[12]);
+		console.log(matrix[1], "\t", matrix[5], "\t", matrix[9], "\t", matrix[13]);
+		console.log(matrix[2], "\t", matrix[6], "\t", matrix[10], "\t", matrix[14]);
+		console.log(matrix[3], "\t", matrix[7], "\t", matrix[11], "\t", matrix[15]);
 	}
 }

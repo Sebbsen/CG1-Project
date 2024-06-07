@@ -1,0 +1,59 @@
+{
+	"type": "root",
+	"children": [
+		{
+			"type": "group",
+			"name": "Sonnensystem",
+			"translation": [0, 0, 0],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1],
+			"children": [
+				{
+					"type": "object",
+					"name": "Sonne",
+					"id": 1,
+					"program": "defaultProgram",
+					"objFile": "./assets/models/earth.obj",
+					"translation": [0, 0, 0],
+					"rotation": [0, 0, 0],
+					"scale": [2, 2, 2],
+					"faceCulling": true,
+					"transparent": false
+				},
+				{
+					"type": "group",
+					"name": "Erdgruppe",
+					"translation": [-3, 0, 0],
+					"rotation": [0, 0, 0],
+					"scale": [1, 1, 1],
+					"children": [
+						{
+							"type": "object",
+							"name": "Erde",
+							"id": 2,
+							"program": "defaultProgram",
+							"objFile": "./assets/models/earth.obj",
+							"translation": [0, 0, 0],
+							"rotation": [0, 0, 0],
+							"scale": [0.5, 0.5, 0.5],
+							"faceCulling": true,
+							"transparent": false
+						},
+						{
+							"type": "object",
+							"name": "Mond",
+							"id": 3,
+							"program": "defaultProgram",
+							"objFile": "./assets/models/earth.obj",
+							"translation": [-1, 0, 0],
+							"rotation": [0, 0, 0],
+							"scale": [0.15, 0.15, 0.15],
+							"faceCulling": true,
+							"transparent": false
+						}
+					]
+				}
+			]
+		}
+	]
+}
