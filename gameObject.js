@@ -7,7 +7,18 @@ export class GameObject {
 	 *
 	 * @param {WebGLProgram} program
 	 */
-	constructor({name = 'noName', id = 0, program, objFile, translation, rotation, scale, faceCulling, transparent, }) {
+	constructor({
+			name = 'noName', 
+			id = 0, 
+			program, 
+			objFile, 
+			translation, 
+			rotation, 
+			scale, 
+			faceCulling, 
+			transparent, 
+			pickable = false
+		}) {
 		this.name = name;
 		this.id = id;
 		this.program = program;
@@ -17,6 +28,7 @@ export class GameObject {
 		this.scale = scale;
 		this.faceCulling = faceCulling;
 		this.isTransparent = transparent;
+		this.pickable = pickable;
 
 		this.vertexCoordinates;
 		this.normalCoordinates;

@@ -9,6 +9,7 @@ export class SceneGraph {
 	constructor() {
         // Inhalt des Szenengraphen
 		this.data = [];
+		this.pickableObjects = [];
 
         // Werden erst zum Zeichnen verwendet.
         this.opaqueObjects = [];
@@ -38,10 +39,15 @@ export class SceneGraph {
 					transparent: element.transparent,
 					id: element.id,
 					name: element.name,
+					pickable: element.pickable,
 				});
 				await gameObject.prepare();
 
 				this.data.push(gameObject);
+
+				if (gameObject.pickable) {
+					this.pickableObjects.push(gameObject);
+				}
 			}
 
 			if (element.type === "group") {
@@ -53,7 +59,7 @@ export class SceneGraph {
 				);
 
 				// Iteriere über die Gruppe
-				this.loadGroup(group, element.children);
+				await this.loadGroup(group, element.children);
 
 				this.data.push(group);
 			}
@@ -62,7 +68,7 @@ export class SceneGraph {
 		return this;
 	}
 
-	loadGroup(group, children) {
+	async loadGroup(group, children) {
 		if (children.length === 0) return null;
 
 		children.forEach(async (element) => {
@@ -82,10 +88,15 @@ export class SceneGraph {
 					transparent: element.transparent,
 					id: element.id,
 					name: element.name,
+					pickable: element.pickable,
 				});
-				await gameObject.prepare();
 
+				await gameObject.prepare();
+				
 				group.children.push(gameObject);
+				if (gameObject.pickable) {
+					this.pickableObjects.push(gameObject);
+				}
 			}
 
 			if (element.type === "group") {
@@ -96,7 +107,7 @@ export class SceneGraph {
 					element.scale
 				);
 
-				this.loadGroup(newgroup, element.children);
+				await this.loadGroup(newgroup, element.children);
 
 				group.children.push(newgroup);
 			}

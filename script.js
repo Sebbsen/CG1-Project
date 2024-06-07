@@ -39,37 +39,15 @@ async function init() {
 	await createPrograms();
 
 	let sceneGraph = new SceneGraph();
-	// sceneGraph.init("./sceneGraphSolarSystemDemo.json");
-	sceneGraph.init("./sceneGraph.json");
+	await sceneGraph.init("./sceneGraphSolarSystemDemo.json");
+	//sceneGraph.init("./sceneGraph.json");
 	console.log(sceneGraph);
 
-	const response = await fetch("./gameObjects.json");
-	const gameObjectsData = await response.json();
-
-	const gameObjects = await Promise.all(gameObjectsData.map(async (data) => {
-		let program = defaultProgram;
-		if (data.program === "defaultProgram") {
-			program = defaultProgram;
-		}
-		// Add more conditions if there are more programs
-
-		let gameObject = new GameObject({
-			program: program,
-			objFile: data.objFile,
-			translation: data.translation,
-			rotation: data.rotation,
-			scale: data.scale,
-			faceCulling: data.faceCulling,
-			transparent: data.transparent,
-			id: data.id,
-			name: data.name
-		});
-		await gameObject.prepare();
-		return gameObject;
-	}));
+	const pickableObjects = sceneGraph.pickableObjects;
+	
+	const objectPicker = new ObjectPicker(gl, canvas, pickableObjects); 
 
 	// Init Object Picker
-	const objectPicker = new ObjectPicker(gl, canvas, gameObjects); 
 
 	// define skybox images
 	const skybox = await createNewSkybox(gl, {
