@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /** @type {HTMLCanvasElement} */
 let canvas = document.getElementById("canvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 // Neben webgl gibt es auch webgl2 (mehr Funktionen) und webgpu (neuerer Standard)
 /** @type {WebGLRenderingContext} */
