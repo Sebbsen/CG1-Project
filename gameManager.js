@@ -5,6 +5,7 @@ export class GameManager {
 
     addToInventory(item) {
         this.inventory.push(item);
+        document.getElementById("item_" + item.id).style.display = "block";
         console.log(this.inventory);
         console.log("INVENTORY: ", this.inventory.map(item => item.name));
     }
