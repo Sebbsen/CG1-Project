@@ -6,6 +6,7 @@ import { createNewSkybox, drawNewSkybox } from "./skybox.js";
 import { initCamera, sensitivity, updateCamera } from "./camera.js";
 import { SceneGraph } from "./sceneGraph.js";
 import { createPrograms, defaultProgram } from "./shaderPrograms.js";
+import { GameManager } from "./gameManager.js";
 
 ("use strict");
 
@@ -61,6 +62,8 @@ async function init() {
 		posz: 'assets/skybox/pz.png',
 	});
 
+	const gameManager = new GameManager();
+
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
 		updateCamera(Global.viewMatrix, mat4);
@@ -94,6 +97,7 @@ async function init() {
         if (pickedObj) {
             console.log('Picked ID:', pickedObj.id);
             document.getElementById("picked_obj").textContent = "Picked Obj: " + pickedObj.name;
+			gameManager.handlePickedObject(pickedObj);
         }
     });
 
