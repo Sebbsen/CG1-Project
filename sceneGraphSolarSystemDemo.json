@@ -35,7 +35,7 @@
 							"type": "object",
 							"name": "Erde",
 							"id": 2,
-							"program": "defaultProgram",
+							"program": "reflectionProgram",
 							"objFile": "./assets/models/earth.obj",
 							"translation": [0, 0, 0],
 							"rotation": [0, 0, 0],

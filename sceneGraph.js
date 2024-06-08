@@ -1,6 +1,7 @@
+import { Global } from "./global.js";
 import { GameObject } from "./gameObject.js";
 import { Group } from "./group.js";
-import { defaultProgram } from "./shaderPrograms.js";
+import { defaultProgram, reflectionProgram } from "./shaderPrograms.js";
 import { gl } from "./script.js";
 import { Mat4 } from "./mat4.js";
 import { Transformation } from "./transformation.js";
@@ -29,6 +30,8 @@ export class SceneGraph {
 				let program = defaultProgram;
 				if (element.program === "defaultProgram") {
 					program = defaultProgram;
+				} else if (element.program === "reflectionProgram") {
+					program = reflectionProgram;
 				}
 
 				let gameObject = new GameObject({
@@ -82,6 +85,8 @@ export class SceneGraph {
                 let program = defaultProgram;
 				if (element.program === "defaultProgram") {
 					program = defaultProgram;
+				} else if (element.program === "reflectionProgram") {
+					program = reflectionProgram;
 				}
 
 				let gameObject = new GameObject({
@@ -184,8 +189,30 @@ export class SceneGraph {
 
         // Listen sind fertig eingelesen und Objekte können gezeichnet werden.
         this.opaqueObjects.forEach((object) => {
-            object.draw();
-        });
+			if (object.program === reflectionProgram) {
+				gl.useProgram(reflectionProgram);
+	
+				// Binden der Skybox-Textur
+				gl.activeTexture(gl.TEXTURE0);
+				gl.bindTexture(gl.TEXTURE_CUBE_MAP, Global.skybox.texture); // assuming skybox is accessible here
+				const skyboxLocation = gl.getUniformLocation(reflectionProgram, "uSkybox");
+				gl.uniform1i(skyboxLocation, 0);
+	
+				// Übergeben der Matrizen-Uniforms
+				const worldMatrixLocation = gl.getUniformLocation(reflectionProgram, "uWorldMatrix");
+				const viewMatrixLocation = gl.getUniformLocation(reflectionProgram, "uViewMatrix");
+				const projectionMatrixLocation = gl.getUniformLocation(reflectionProgram, "uProjectionMatrix");
+	
+				gl.uniformMatrix4fv(worldMatrixLocation, false, object.worldMatrix);
+				gl.uniformMatrix4fv(viewMatrixLocation, false, Global.viewMatrix);
+				gl.uniformMatrix4fv(projectionMatrixLocation, false, Global.projectionMatrix);
+	
+				// Zeichnen des Objekts
+				object.draw();
+			} else {
+				object.draw();
+			}
+		});
 	}
 
 	drawGroup(group, previousTransformations) {
