@@ -63,6 +63,8 @@ async function init() {
 		posz: "assets/skybox/pz.png",
 	});
 
+	Global.skybox = skybox;
+
 	const gameManager = new GameManager();
 
 	const solarSystem = sceneGraph.allGroups.find((group) => group.name === "Sonnensystem");
