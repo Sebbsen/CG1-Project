@@ -1,12 +1,7 @@
-import { createProgram } from "./program.js";
+import { skyboxProgram } from "./shaderPrograms.js";
 import { Global } from "./global.js";
 
 export async function createNewSkybox(gl, images) {
-    const skyboxProgram = await createProgram(
-        gl,
-        "./shader-programs/skybox/vertex.glsl",
-        "./shader-programs/skybox/fragment.glsl"
-    );
 
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
