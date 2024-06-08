@@ -83,17 +83,17 @@ async function init() {
 		gl.depthFunc(gl.LESS); // Restore the depth function
 
 		// KONTINUIERLICHE ANIMATIONEN
-		// if (solarSystem) {
-		// 	const startRotY = solarSystem.rotation;
-		// 	const endRotY = [startRotY[0], startRotY[1] - 1, startRotY[2]];
-		// 	solarSystem.animateRotationPerFrame(startRotY, endRotY);
-		// }
+		if (solarSystem) {
+			const startRotY = solarSystem.rotation;
+			const endRotY = [startRotY[0], startRotY[1] - 1, startRotY[2]];
+			solarSystem.animateRotationPerFrame(startRotY, endRotY);
+		}
 		
-		// if (earthGroup) {
-		// 	const startRotY = earthGroup.rotation;
-		// 	const endRotY = [startRotY[0], startRotY[1] - 1, startRotY[2]];
-		// 	earthGroup.animateRotationPerFrame(startRotY, endRotY);
-		// }
+		if (earthGroup) {
+			const startRotY = earthGroup.rotation;
+			const endRotY = [startRotY[0], startRotY[1] - 1, startRotY[2]];
+			earthGroup.animateRotationPerFrame(startRotY, endRotY);
+		}
 
 		sceneGraph.draw();
 
@@ -106,14 +106,14 @@ async function init() {
 
 	// ANIMATION BEISPIEL
 	// Animieren eines bestimmten Objekts
-	const ObjectToAnimate = sceneGraph.allObjects.find(
-		(obj) => obj.name === "Erde"
-	); // Beispielobjekt "Erde"
-	if (ObjectToAnimate) {
-		const startPos = ObjectToAnimate.translation;
-		const endPos = [startPos[0] - 1, startPos[1] - 1, startPos[2]];
-		ObjectToAnimate.animateTranslation(startPos, endPos, 2000); // Animation in 2000ms
-	}
+	// const ObjectToAnimate = sceneGraph.allObjects.find(
+	// 	(obj) => obj.name === "Erde"
+	// ); // Beispielobjekt "Erde"
+	// if (ObjectToAnimate) {
+	// 	const startPos = ObjectToAnimate.translation;
+	// 	const endPos = [startPos[0] - 1, startPos[1] - 1, startPos[2]];
+	// 	ObjectToAnimate.animateTranslation(startPos, endPos, 2000); // Animation in 2000ms
+	// }
 
 	//Pick Object
 	canvas.addEventListener("click", (event) => {
