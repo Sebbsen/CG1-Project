@@ -9,6 +9,7 @@ export class SceneGraph {
 	constructor() {
         // Inhalt des Szenengraphen
 		this.data = [];
+		this.allObjects = [];
 		this.pickableObjects = [];
 
         // Werden erst zum Zeichnen verwendet.
@@ -45,6 +46,7 @@ export class SceneGraph {
 
 				this.data.push(gameObject);
 
+				this.allObjects.push(gameObject);
 				if (gameObject.pickable) {
 					this.pickableObjects.push(gameObject);
 				}
@@ -94,6 +96,8 @@ export class SceneGraph {
 				await gameObject.prepare();
 				
 				group.children.push(gameObject);
+
+				this.allObjects.push(gameObject);
 				if (gameObject.pickable) {
 					this.pickableObjects.push(gameObject);
 				}

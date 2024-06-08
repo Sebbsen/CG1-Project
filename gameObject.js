@@ -77,6 +77,34 @@ export class GameObject {
 		this.prepareBuffer();
 	}
 
+	// Funktion zum animieren des Objekts
+	animateTranslation(from, to, duration) {
+        const startTime = performance.now(); // Startzeit speichern
+
+		// Differenz berechnen
+        const deltaX = to[0] - from[0];
+        const deltaY = to[1] - from[1];
+        const deltaZ = to[2] - from[2];
+
+        const animate = (currentTime) => {
+            const elapsedTime = currentTime - startTime; // vergangene Zeit seit Start
+            const t = Math.min(elapsedTime / duration, 1); // Normierte Zeit (0 bis 1)
+
+			// Berechne die aktuellen Koordinaten nach der Zeit t
+            const currentX = from[0] + deltaX * t;
+            const currentY = from[1] + deltaY * t;
+            const currentZ = from[2] + deltaZ * t;
+
+            this.translation = [currentX, currentY, currentZ]; // setzen der neuen Position
+
+            if (t < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+
+        requestAnimationFrame(animate);
+    }
+
 	translate(x, y ,z) {
 		this.worldMatrix = Mat4.translate(this.worldMatrix, [x, y, z]);
 	}
