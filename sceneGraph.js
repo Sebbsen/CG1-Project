@@ -9,6 +9,7 @@ export class SceneGraph {
 	constructor() {
         // Inhalt des Szenengraphen
 		this.data = [];
+		this.allGroups = [];
 		this.allObjects = [];
 		this.pickableObjects = [];
 
@@ -60,10 +61,13 @@ export class SceneGraph {
 					element.scale
 				);
 
+				this.allGroups.push(group);
+
 				// Iteriere über die Gruppe
 				await this.loadGroup(group, element.children);
 
 				this.data.push(group);
+
 			}
 		});
 
@@ -111,9 +115,12 @@ export class SceneGraph {
 					element.scale
 				);
 
+				this.allGroups.push(newgroup);
+
 				await this.loadGroup(newgroup, element.children);
 
 				group.children.push(newgroup);
+
 			}
 		});
 	}

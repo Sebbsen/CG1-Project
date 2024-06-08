@@ -1,6 +1,7 @@
 import { gl } from "./script.js";
 import { Mat4 } from "./mat4.js";
 import { Global } from "./global.js";
+import { deltaTime } from "./script.js";
 
 export class GameObject {
 	/**
@@ -8,17 +9,17 @@ export class GameObject {
 	 * @param {WebGLProgram} program
 	 */
 	constructor({
-			name = 'noName', 
-			id = 0, 
-			program, 
-			objFile, 
-			translation, 
-			rotation, 
-			scale, 
-			faceCulling, 
-			transparent, 
-			pickable = false
-		}) {
+		name = "noName",
+		id = 0,
+		program,
+		objFile,
+		translation,
+		rotation,
+		scale,
+		faceCulling,
+		transparent,
+		pickable = false,
+	}) {
 		this.name = name;
 		this.id = id;
 		this.program = program;
@@ -67,7 +68,11 @@ export class GameObject {
 		this.loadUniforms();
 
 		gl.uniform1i(gl.getUniformLocation(this.program, "uPicking"), 1);
-		gl.uniform3fv(gl.getUniformLocation(this.program, "uPickingColor"), [((this.id >> 16) & 0xFF) / 255, ((this.id >> 8) & 0xFF) / 255, (this.id & 0xFF) / 255,]);
+		gl.uniform3fv(gl.getUniformLocation(this.program, "uPickingColor"), [
+			((this.id >> 16) & 0xff) / 255,
+			((this.id >> 8) & 0xff) / 255,
+			(this.id & 0xff) / 255,
+		]);
 		gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
 		gl.uniform1i(gl.getUniformLocation(this.program, "uPicking"), 0);
 	}
@@ -79,33 +84,126 @@ export class GameObject {
 
 	// Funktion zum animieren des Objekts
 	animateTranslation(from, to, duration) {
-        const startTime = performance.now(); // Startzeit speichern
+		const startTime = performance.now(); // Startzeit speichern
 
 		// Differenz berechnen
-        const deltaX = to[0] - from[0];
-        const deltaY = to[1] - from[1];
-        const deltaZ = to[2] - from[2];
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
 
-        const animate = (currentTime) => {
-            const elapsedTime = currentTime - startTime; // vergangene Zeit seit Start
-            const t = Math.min(elapsedTime / duration, 1); // Normierte Zeit (0 bis 1)
+		const animate = (currentTime) => {
+			const elapsedTime = currentTime - startTime; // vergangene Zeit seit Start
+			const t = Math.min(elapsedTime / duration, 1); // Normierte Zeit (0 bis 1)
 
 			// Berechne die aktuellen Koordinaten nach der Zeit t
-            const currentX = from[0] + deltaX * t;
-            const currentY = from[1] + deltaY * t;
-            const currentZ = from[2] + deltaZ * t;
+			const currentX = from[0] + deltaX * t;
+			const currentY = from[1] + deltaY * t;
+			const currentZ = from[2] + deltaZ * t;
 
-            this.translation = [currentX, currentY, currentZ]; // setzen der neuen Position
+			this.translation = [currentX, currentY, currentZ]; // setzen der neuen Position
 
-            if (t < 1) {
-                requestAnimationFrame(animate);
-            }
-        };
+			if (t < 1) {
+				requestAnimationFrame(animate);
+			}
+		};
 
-        requestAnimationFrame(animate);
-    }
+		requestAnimationFrame(animate);
+	}
 
-	translate(x, y ,z) {
+	animateRotation(from, to, duration) {
+		const startTime = performance.now(); // Startzeit speichern
+
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const animate = (currentTime) => {
+			const elapsedTime = currentTime - startTime; // vergangene Zeit seit Start
+			const t = Math.min(elapsedTime / duration, 1); // Normierte Zeit (0 bis 1)
+
+			// Berechne die aktuellen Koordinaten nach der Zeit t
+			const currentX = from[0] + deltaX * t;
+			const currentY = from[1] + deltaY * t;
+			const currentZ = from[2] + deltaZ * t;
+
+			this.rotation = [currentX, currentY, currentZ]; // setzen der neuen Rotation
+
+			if (t < 1) {
+				requestAnimationFrame(animate);
+			}
+		};
+
+		requestAnimationFrame(animate);
+	}
+	
+	animateScale(from, to, duration) {
+		const startTime = performance.now(); // Startzeit speichern
+
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const animate = (currentTime) => {
+			const elapsedTime = currentTime - startTime; // vergangene Zeit seit Start
+			const t = Math.min(elapsedTime / duration, 1); // Normierte Zeit (0 bis 1)
+
+			// Berechne die aktuellen Koordinaten nach der Zeit t
+			const currentX = from[0] + deltaX * t;
+			const currentY = from[1] + deltaY * t;
+			const currentZ = from[2] + deltaZ * t;
+
+			this.scale = [currentX, currentY, currentZ]; // setzen der neuen Skalierung
+
+			if (t < 1) {
+				requestAnimationFrame(animate);
+			}
+		};
+
+		requestAnimationFrame(animate);
+	}
+
+	animateTranslationPerFrame(from, to) {
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const currentX = from[0] + deltaX * deltaTime;
+		const currentY = from[1] + deltaY * deltaTime;
+		const currentZ = from[2] + deltaZ * deltaTime;
+
+		this.translation = [currentX, currentY, currentZ]; // setzen der neuen Translation
+	}
+
+	animateRotationPerFrame(from, to) {
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const currentX = from[0] + deltaX * deltaTime;
+		const currentY = from[1] + deltaY * deltaTime;
+		const currentZ = from[2] + deltaZ * deltaTime;
+
+		this.rotation = [currentX, currentY, currentZ]; // setzen der neuen Rotation
+	}
+	
+	animateScalePerFrame(from, to) {
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const currentX = from[0] + deltaX * deltaTime;
+		const currentY = from[1] + deltaY * deltaTime;
+		const currentZ = from[2] + deltaZ * deltaTime;
+
+		this.scale = [currentX, currentY, currentZ]; // setzen der neuen Skalierung
+	}
+
+	translate(x, y, z) {
 		this.worldMatrix = Mat4.translate(this.worldMatrix, [x, y, z]);
 	}
 
@@ -114,7 +212,10 @@ export class GameObject {
 	}
 
 	rotateX(degrees) {
-		this.worldMatrix = Mat4.rotateX(this.worldMatrix, degrees / (2 * Math.PI));
+		this.worldMatrix = Mat4.rotateX(
+			this.worldMatrix,
+			degrees / (2 * Math.PI)
+		);
 
 		gl.useProgram(this.program);
 
@@ -124,7 +225,7 @@ export class GameObject {
 			this.worldMatrix
 		);
 	}
-	
+
 	rotateY(degrees) {
 		this.worldMatrix = Mat4.rotateY(this.worldMatrix, degrees / Math.PI);
 
@@ -296,7 +397,11 @@ export class GameObject {
 			false,
 			this.worldMatrix
 		);
-		gl.uniformMatrix4fv(this.viewMatrixUniformLocation, false, Global.viewMatrix);
+		gl.uniformMatrix4fv(
+			this.viewMatrixUniformLocation,
+			false,
+			Global.viewMatrix
+		);
 		gl.uniformMatrix4fv(
 			this.projectionMatrixUniformLocation,
 			false,
