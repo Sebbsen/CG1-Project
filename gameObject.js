@@ -20,9 +20,11 @@ export class GameObject {
 		transparent,
 		pickable = false,
 		disabled = false,
-		emissive = [0,0,0,1],
-		ambientMaterial = [1,1,1,1],
-		diffuseMaterial = [1,1,1,1],
+		emissive = [0, 0, 0, 1],
+		ambientMaterial = [0.1, 0.2, 0.5, 1],
+		diffuseMaterial = [1, 1, 1, 1],
+		specularMaterial = [1, 1, 1, 1],
+		shininess = 50.0,
 	}) {
 		this.name = name;
 		this.id = id;
@@ -38,6 +40,8 @@ export class GameObject {
 		this.emissive = emissive;
 		this.ambientMaterial = ambientMaterial;
 		this.diffuseMaterial = diffuseMaterial;
+		this.specularMaterial = specularMaterial;
+		this.shininess = shininess;
 
 		this.vertexCoordinates;
 		this.normalCoordinates;
@@ -148,7 +152,7 @@ export class GameObject {
 
 		requestAnimationFrame(animate);
 	}
-	
+
 	animateScale(from, to, duration) {
 		const startTime = performance.now(); // Startzeit speichern
 
@@ -201,7 +205,7 @@ export class GameObject {
 
 		this.rotation = [currentX, currentY, currentZ]; // setzen der neuen Rotation
 	}
-	
+
 	animateScalePerFrame(from, to) {
 		// Differenz berechnen
 		const deltaX = to[0] - from[0];
@@ -416,14 +420,46 @@ export class GameObject {
 			Global.projectionMatrix
 		);
 
-		gl.uniform4fv(gl.getUniformLocation(this.program, "emissive"), this.emissive);
-		gl.uniform4fv(gl.getUniformLocation(this.program, "ambientLight"), Global.ambientLightColor);
-		gl.uniform4fv(gl.getUniformLocation(this.program, "ambientMaterial"), this.ambientMaterial);
-		gl.uniform4fv(gl.getUniformLocation(this.program, "diffuseMaterial"), this.diffuseMaterial);
-		gl.uniform3fv(gl.getUniformLocation(this.program, "sunPosition"), Global.sunPosition);
-		gl.uniform3fv(gl.getUniformLocation(this.program, "sunDirection"), Global.sunDirection);
-		gl.uniform3fv(gl.getUniformLocation(this.program, "lightPosition1"), Global.lightPosition1);
-		gl.uniform4fv(gl.getUniformLocation(this.program, "lightColor1"), Global.lightColor1);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "emissive"),
+			this.emissive
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "ambientLight"),
+			Global.ambientLightColor
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "ambientMaterial"),
+			this.ambientMaterial
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "diffuseMaterial"),
+			this.diffuseMaterial
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "specularMaterial"),
+			this.specularMaterial
+		);
+		gl.uniform1f(
+			gl.getUniformLocation(this.program, "shininess"),
+			this.shininess
+		);
+		gl.uniform3fv(
+			gl.getUniformLocation(this.program, "sunPosition"),
+			Global.sunPosition
+		);
+		gl.uniform3fv(
+			gl.getUniformLocation(this.program, "sunDirection"),
+			Global.sunDirection
+		);
+		gl.uniform3fv(
+			gl.getUniformLocation(this.program, "pointLightPosition1"),
+			Global.pointLightPosition1
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "pointLightColor1"),
+			Global.pointLightColor1
+		);
 	}
 
 	/**

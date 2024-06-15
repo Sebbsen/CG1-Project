@@ -16,10 +16,10 @@ export class Global {
 
 	// Uniform-Daten
 	static sunPosition = [0, 10, 0];
-	static sunDirection = [0, 1, 0];
-	static ambientLightColor = [0, 0.1, 0.2, 0.25];
-	static lightPosition1 = [0, 2.5, 0];
-	static lightColor1 = [1, 1, 1, 1];
+	static sunDirection = [0.4, 1, 0];
+	static ambientLightColor = [0, 0.1, 0.2, 1];
+	static pointLightPosition1 = [0, 1.5, 0];
+	static pointLightColor1 = [1, 0.8, 0.5, 1];
 
 	// Provisorische Liste an opaken Objekten
 	static opaqueObjects = [];

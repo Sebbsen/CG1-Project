@@ -45,6 +45,7 @@ export class SceneGraph {
 					id: element.id,
 					name: element.name,
 					pickable: element.pickable,
+					diffuseMaterial: element.diffuseMaterial ? element.diffuseMaterial : [0,0,0,1],
 				});
 				await gameObject.prepare();
 
@@ -100,6 +101,7 @@ export class SceneGraph {
 					id: element.id,
 					name: element.name,
 					pickable: element.pickable,
+					diffuseMaterial: element.diffuseMaterial ? element.diffuseMaterial : [0,0,0,1],
 				});
 
 				await gameObject.prepare();
