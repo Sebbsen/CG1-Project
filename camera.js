@@ -60,6 +60,13 @@ export function updateCamera(viewMatrix, mat4) {
         cameraZ -= speed * Math.sin(cameraRotX);
     }
 
+    if (keys[' ']) {
+        cameraY += speed;
+    }
+    if (keys['f'] || keys['Shift']) {
+        cameraY -= speed;
+    }
+
     // Calculate the direction the camera is looking
     let cameraDirection = [
         Math.sin(cameraRotX) * Math.cos(cameraRotY),
