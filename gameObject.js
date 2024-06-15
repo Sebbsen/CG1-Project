@@ -20,6 +20,9 @@ export class GameObject {
 		transparent,
 		pickable = false,
 		disabled = false,
+		emissive = [0,0,0,1],
+		ambientMaterial = [1,1,1,1],
+		diffuseMaterial = [1,1,1,1],
 	}) {
 		this.name = name;
 		this.id = id;
@@ -32,6 +35,9 @@ export class GameObject {
 		this.isTransparent = transparent;
 		this.pickable = pickable;
 		this.disabled = disabled;
+		this.emissive = emissive;
+		this.ambientMaterial = ambientMaterial;
+		this.diffuseMaterial = diffuseMaterial;
 
 		this.vertexCoordinates;
 		this.normalCoordinates;
@@ -394,10 +400,6 @@ export class GameObject {
 			"projectionMatrix"
 		);
 
-		// Mat4.identity(this.worldMatrix);
-		// this.scale(this.scale[0], this.scale[1], this.scale[2]);
-		// this.translate(this.translation[0], this.translation[1], this.translation[2]);
-
 		gl.uniformMatrix4fv(
 			this.worldMatrixUniformLocation,
 			false,
@@ -413,6 +415,15 @@ export class GameObject {
 			false,
 			Global.projectionMatrix
 		);
+
+		gl.uniform4fv(gl.getUniformLocation(this.program, "emissive"), this.emissive);
+		gl.uniform4fv(gl.getUniformLocation(this.program, "ambientLight"), Global.ambientLightColor);
+		gl.uniform4fv(gl.getUniformLocation(this.program, "ambientMaterial"), this.ambientMaterial);
+		gl.uniform4fv(gl.getUniformLocation(this.program, "diffuseMaterial"), this.diffuseMaterial);
+		gl.uniform3fv(gl.getUniformLocation(this.program, "sunPosition"), Global.sunPosition);
+		gl.uniform3fv(gl.getUniformLocation(this.program, "sunDirection"), Global.sunDirection);
+		gl.uniform3fv(gl.getUniformLocation(this.program, "lightPosition1"), Global.lightPosition1);
+		gl.uniform4fv(gl.getUniformLocation(this.program, "lightColor1"), Global.lightColor1);
 	}
 
 	/**

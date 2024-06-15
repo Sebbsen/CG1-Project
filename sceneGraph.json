@@ -17,13 +17,13 @@
 					"children": [
 						{
 							"type": "object",
-							"name": "Object1",
+							"name": "Floor",
 							"id": 1,
 							"program": "defaultProgram",
 							"objFile": "./assets/models/cube.obj",
-							"translation": [0, 0, 0],
+							"translation": [0, -2, 0],
 							"rotation": [0, 0, 0],
-							"scale": [1, 1, 1],
+							"scale": [10, 1, 10],
 							"faceCulling": true,
 							"transparent": false
 						},
@@ -32,34 +32,10 @@
 							"name": "Object2",
 							"id": 2,
 							"program": "defaultProgram",
-							"objFile": "./assets/models/earth.obj",
-							"translation": [0, 2, 0],
+							"objFile": "./assets/models/cube.obj",
+							"translation": [1, -1, 0],
 							"rotation": [0, 0, 0],
-							"scale": [1, 1, 1],
-							"faceCulling": true,
-							"transparent": false
-						},
-						{
-							"type": "object",
-							"name": "Object3",
-							"id": 3,
-							"program": "defaultProgram",
-							"objFile": "./assets/models/lamp.obj",
-							"translation": [2, -8, 0],
-							"rotation": [0, 0, 0],
-							"scale": [1, 1, 1],
-							"faceCulling": true,
-							"transparent": false
-						},
-						{
-							"type": "object",
-							"name": "Object4",
-							"id": 4,
-							"program": "defaultProgram",
-							"objFile": "./assets/models/desk-full.obj",
-							"translation": [2, -8, 0],
-							"rotation": [0, 0, 0],
-							"scale": [1, 1, 1],
+							"scale": [0.5, 0.5, 0.5],
 							"faceCulling": true,
 							"transparent": false
 						}

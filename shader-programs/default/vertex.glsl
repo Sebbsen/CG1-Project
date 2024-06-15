@@ -8,6 +8,7 @@ attribute vec3 aPosition;
 attribute vec3 aNormal;
 
 varying vec3 fragNormal;
+varying vec3 fragPosition;
 
 void main() {
     gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(aPosition, 1.0);
@@ -17,4 +18,5 @@ void main() {
     normal = normalize(normal);
 
     fragNormal = normal;
+    fragPosition = (viewMatrix * worldMatrix * vec4(aPosition, 0.0)).xyz;
 }

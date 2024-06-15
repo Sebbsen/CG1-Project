@@ -43,8 +43,8 @@ async function init() {
 	await createPrograms();
 
 	let sceneGraph = new SceneGraph();
-	await sceneGraph.init("./sceneGraphSolarSystemDemo.json");
-	//await sceneGraph.init("./sceneGraph.json");
+	// await sceneGraph.init("./sceneGraphSolarSystemDemo.json");
+	await sceneGraph.init("./sceneGraph.json");
 	console.log(sceneGraph);
 
 	const pickableObjects = sceneGraph.pickableObjects;
