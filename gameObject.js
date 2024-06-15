@@ -19,6 +19,7 @@ export class GameObject {
 		faceCulling,
 		transparent,
 		pickable = false,
+		disabled = false,
 	}) {
 		this.name = name;
 		this.id = id;
@@ -30,6 +31,7 @@ export class GameObject {
 		this.faceCulling = faceCulling;
 		this.isTransparent = transparent;
 		this.pickable = pickable;
+		this.disabled = disabled;
 
 		this.vertexCoordinates;
 		this.normalCoordinates;
@@ -49,6 +51,8 @@ export class GameObject {
 	}
 
 	draw() {
+		if (this.disabled) return;
+
 		gl.useProgram(this.program);
 		this.loadAttributes();
 		this.loadUniforms();
@@ -63,6 +67,8 @@ export class GameObject {
 	}
 
 	drawPicking() {
+		if (this.disabled) return;
+
 		gl.useProgram(this.program);
 		this.loadAttributes();
 		this.loadUniforms();
