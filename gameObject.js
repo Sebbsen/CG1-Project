@@ -73,6 +73,7 @@ export class GameObject {
 			gl.disable(gl.CULL_FACE);
 		}
 
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
 	}
 

@@ -27,7 +27,7 @@ export let gl = canvas.getContext("webgl") || canvas.getContext("webgl2");
 if (!gl) {
 	console.error("WebGL does not work and might not be supported");
 }
-gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
 
 let then = window.performance.now();
 export let deltaTime = 1;

@@ -65,10 +65,11 @@
 			"objFile": "./assets/models/earth.obj",
 			"translation": [-3, 1, 0],
 			"rotation": [0, 0, 0],
-			"scale": [1,1,1],
+			"scale": [1, 1, 1],
 			"faceCulling": true,
 			"transparent": false,
-			"diffuseMaterial": [1, 1, 1, 1]
+			"diffuseMaterial": [1, 1, 1, 1],
+			"specularMaterial": [0, 0, 0, 0]
 		},
 		{
 			"type": "object",
@@ -78,7 +79,7 @@
 			"objFile": "./assets/models/cube.obj",
 			"translation": [2, -0.5, -5],
 			"rotation": [0, 0, 0],
-			"scale": [1,1,1],
+			"scale": [1, 1, 1],
 			"faceCulling": true,
 			"transparent": false,
 			"diffuseMaterial": [1, 1, 1, 1]
@@ -91,10 +92,62 @@
 			"objFile": "./assets/models/cube.obj",
 			"translation": [0, 5, 0],
 			"rotation": [0, 0, 0],
-			"scale": [0.5,0.5,0.5],
+			"scale": [0.5, 0.5, 0.5],
 			"faceCulling": true,
 			"transparent": false,
 			"diffuseMaterial": [1, 1, 1, 1]
+		},
+		{
+			"type": "object",
+			"name": "Transparenter Würfel 1",
+			"id": 7,
+			"program": "transparentProgram",
+			"objFile": "./assets/models/cube.obj",
+			"translation": [3, 0, 0],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1],
+			"faceCulling": false,
+			"transparent": true,
+			"diffuseMaterial": [1, 0, 0, 0.5]
+		},
+		{
+			"type": "object",
+			"name": "Transparenter Würfel 2",
+			"id": 8,
+			"program": "transparentProgram",
+			"objFile": "./assets/models/cube.obj",
+			"translation": [3, 0, 3],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1],
+			"faceCulling": false,
+			"transparent": true,
+			"diffuseMaterial": [0, 1, 0, 0.5]
+		},
+		{
+			"type": "object",
+			"name": "Transparenter Würfel 3",
+			"id": 9,
+			"program": "transparentProgram",
+			"objFile": "./assets/models/cube.obj",
+			"translation": [-3, 0, 3],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1],
+			"faceCulling": false,
+			"transparent": true,
+			"diffuseMaterial": [0, 0, 1, 0.5]
+		},
+		{
+			"type": "object",
+			"name": "Transparenter Würfel 4",
+			"id": 10,
+			"program": "transparentProgram",
+			"objFile": "./assets/models/cube.obj",
+			"translation": [-3, 0, 0],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1],
+			"faceCulling": false,
+			"transparent": true,
+			"diffuseMaterial": [1, 1, 1, 0.05]
 		}
 	]
 }

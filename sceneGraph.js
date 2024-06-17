@@ -1,7 +1,7 @@
 import { Global } from "./global.js";
 import { GameObject } from "./gameObject.js";
 import { Group } from "./group.js";
-import { defaultProgram, reflectionProgram } from "./shaderPrograms.js";
+import { defaultProgram, reflectionProgram, transparentProgram } from "./shaderPrograms.js";
 import { gl } from "./script.js";
 import { Mat4 } from "./mat4.js";
 import { Transformation } from "./transformation.js";
@@ -32,6 +32,8 @@ export class SceneGraph {
 					program = defaultProgram;
 				} else if (element.program === "reflectionProgram") {
 					program = reflectionProgram;
+				} else if (element.program === "transparentProgram") {
+					program = transparentProgram;
 				}
 
 				let gameObject = new GameObject({
@@ -46,6 +48,7 @@ export class SceneGraph {
 					name: element.name,
 					pickable: element.pickable,
 					diffuseMaterial: element.diffuseMaterial ? element.diffuseMaterial : [0,0,0,1],
+					specularMaterial: element.specularMaterial ? element.specularMaterial : [0,0,0,1],
 				});
 				await gameObject.prepare();
 
@@ -88,6 +91,8 @@ export class SceneGraph {
 					program = defaultProgram;
 				} else if (element.program === "reflectionProgram") {
 					program = reflectionProgram;
+				} else if (element.program === "transparentProgram") {
+					program = transparentProgram;
 				}
 
 				let gameObject = new GameObject({
@@ -102,6 +107,7 @@ export class SceneGraph {
 					name: element.name,
 					pickable: element.pickable,
 					diffuseMaterial: element.diffuseMaterial ? element.diffuseMaterial : [0,0,0,1],
+					specularMaterial: element.specularMaterial ? element.specularMaterial : [0,0,0,1],
 				});
 
 				await gameObject.prepare();
@@ -215,6 +221,27 @@ export class SceneGraph {
 				object.draw();
 			}
 		});
+
+		// Sortiere transparente Objekte.
+		this.transparentObjects.sort((a, b) => {
+			let distA = Math.sqrt(Math.pow(Global.cameraPosition[0] - a.translation[0], 2) + Math.pow(Global.cameraPosition[1] - a.translation[1], 2) + Math.pow(Global.cameraPosition[2] - a.translation[2], 2));
+			let distB = Math.sqrt(Math.pow(Global.cameraPosition[0] - b.translation[0], 2) + Math.pow(Global.cameraPosition[1] - b.translation[1], 2) + Math.pow(Global.cameraPosition[2] - b.translation[2], 2));
+			return distB - distA;
+		});
+
+		// Aktiviere Blending
+		gl.depthMask(false); 
+		gl.enable(gl.BLEND);
+		gl.blendEquation(gl.FUNC_ADD);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+		// Zeichne transparente Objekte
+		this.transparentObjects.forEach((object) => {
+			object.draw();
+		});
+
+		gl.disable(gl.BLEND);
+		gl.depthMask(true);
 	}
 
 	drawGroup(group, previousTransformations) {
