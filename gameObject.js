@@ -13,11 +13,11 @@ export class GameObject {
 		id = 0,
 		program,
 		objFile,
-		translation,
-		rotation,
-		scale,
-		faceCulling,
-		transparent,
+		translation = [0, 0, 0],
+		rotation = [0, 0, 0],
+		scale = [1, 1, 1],
+		faceCulling = true,
+		transparent = false,
 		pickable = false,
 		disabled = false,
 		emissive = [0, 0, 0, 1],
@@ -223,7 +223,7 @@ export class GameObject {
 		this.worldMatrix = Mat4.translate(this.worldMatrix, [x, y, z]);
 	}
 
-	scale(x, y, z) {
+	applyScale(x, y, z) {
 		this.worldMatrix = Mat4.scale(this.worldMatrix, [x, y, z]);
 	}
 
@@ -288,8 +288,6 @@ export class GameObject {
 		let normalCoordinates = this.loadOBJNormalCoordinates(objFile);
 		let textureCoordinates = this.loadOBJTextureCoordinates(objFile);
 
-		// console.log("loadModelData() - vertexCoordinates: ", vertexCoordinates);
-
 		let vertexIndices = this.loadOBJVertexIndices(objFile);
 		let normalIndices = this.loadOBJNormalIndices(objFile);
 		let textureIndices = this.loadOBJTextureIndices(objFile);
@@ -298,7 +296,6 @@ export class GameObject {
 		vertexIndices.forEach(function (value, i) {
 			vertices.push(vertexCoordinates[value]);
 		});
-		// console.log("loadModelData() - vertices: ", vertices);
 
 		let normals = [];
 		normalIndices.forEach(function (value, i) {
@@ -314,16 +311,12 @@ export class GameObject {
 		this.vertexCoordinates = new Float32Array(vertices.flat());
 		this.normalCoordinates = new Float32Array(normals.flat());
 		this.textureCoordinates = new Float32Array(textures.flat());
-
-		// console.log("loadModelData() - vertexCoordinates: ", this.vertexCoordinates);
 	}
 
 	prepareBuffer() {
 		this.vertexBufferObject = gl.createBuffer();
 		this.normalBufferObject = gl.createBuffer();
 		this.textureBufferObject = gl.createBuffer();
-
-		// console.log(this.vertexBufferObject);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
 		gl.bufferData(gl.ARRAY_BUFFER, this.vertexCoordinates, gl.STATIC_DRAW);
@@ -332,10 +325,6 @@ export class GameObject {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBufferObject);
 		gl.bufferData(gl.ARRAY_BUFFER, this.textureCoordinates, gl.STATIC_DRAW);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-		// console.log("prepareBuffer() - vertexCoordinates: ", this.vertexCoordinates);
-		// console.log("prepareBuffer() - normalCoordinates: ", this.normalCoordinates);
-		// console.log("prepareBuffer() - textureCoordinates: ", this.textureCoordinates);
 	}
 
 	loadAttributes() {
@@ -370,22 +359,6 @@ export class GameObject {
 			0 * Float32Array.BYTES_PER_ELEMENT
 		);
 		gl.enableVertexAttribArray(normalAttributeLocation);
-
-		// texture
-		// gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBufferObject);
-		// let textureAttributeLocation = gl.getAttribLocation(
-		// 	this.program,
-		// 	"aTexture"
-		// );
-		// gl.vertexAttribPointer(
-		// 	textureAttributeLocation,
-		// 	2,
-		// 	gl.FLOAT,
-		// 	false,
-		// 	2 * Float32Array.BYTES_PER_ELEMENT,
-		// 	0 * Float32Array.BYTES_PER_ELEMENT
-		// );
-		// gl.enableVertexAttribArray(textureAttributeLocation);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
