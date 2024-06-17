@@ -60,9 +60,7 @@ void main() {
 
     // (max(reflect dot normal, 0))^shininess * (light color komponentenweise multipliziert mit material)
     vec3 reflect_vector = (2.0 * dot(normal, normalize(sunDirection))) * normal - normalize(sunDirection);
-    float shininess = 60.0;
-    vec4 mat_specular = vec4(0.75, 0.75, 0.75, 1.0);
-    vec4 specular = pow(max(dot(normal, reflect_vector), 0.0), shininess) * mat_specular;
+    vec4 specular = pow(max(dot(normal, reflect_vector), 0.0), shininess) * specularMaterial;
 
     gl_FragColor = emissive + ambient + diffuse + diffuse_point_light_1 + specular;
 }
