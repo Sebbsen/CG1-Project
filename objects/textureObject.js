@@ -47,7 +47,7 @@ export class TextureObject extends GameObject {
 
 		let textureSrc = document.getElementById(this.texture);
 		let texture = gl.createTexture();
-		gl.activeTexture(gl.TEXTURE0);
+		gl.activeTexture(gl.TEXTURE0 + this.id);
 		gl.bindTexture(gl.TEXTURE_2D, texture);
 		gl.texParameteri(
 			gl.TEXTURE_2D,
@@ -91,6 +91,6 @@ export class TextureObject extends GameObject {
 	loadUniforms() {
 		super.loadUniforms();
 
-		gl.uniform1i(gl.getUniformLocation(this.program, "texture"), 0);
+		gl.uniform1i(gl.getUniformLocation(this.program, "texture"), this.id);
 	}
 }

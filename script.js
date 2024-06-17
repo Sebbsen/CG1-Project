@@ -5,9 +5,10 @@ import { ObjectPicker } from "./objectPicker.js";
 import { createNewSkybox, drawNewSkybox } from "./skybox.js";
 import { initCamera, sensitivity, updateCamera } from "./camera.js";
 import { SceneGraph } from "./sceneGraph.js";
-import { createPrograms, defaultProgram, textureProgram } from "./shaderPrograms.js";
+import { createPrograms, defaultProgram, textureProgram, videoProgram } from "./shaderPrograms.js";
 import { GameManager } from "./gameManager.js";
 import { TextureObject } from "./objects/textureObject.js";
+import { VideoObject } from "./objects/videoObject.js";
 
 ("use strict");
 
@@ -26,6 +27,7 @@ export let gl = canvas.getContext("webgl") || canvas.getContext("webgl2");
 if (!gl) {
 	console.error("WebGL does not work and might not be supported");
 }
+gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
 let then = window.performance.now();
 export let deltaTime = 1;
@@ -71,10 +73,13 @@ async function init() {
 	const solarSystem = sceneGraph.allGroups.find((group) => group.name === "Sonnensystem");
 	const earthGroup = sceneGraph.allGroups.find((group) => group.name === "Erdgruppe");
 
-	const crateObject = new TextureObject({name: "Crate", program: textureProgram, id: 99, objFile: "./assets/models/cube-singlesided.obj", texture: "crate"});
-	await crateObject.prepare();
-	crateObject.applyScale(0.25, 0.25, 0.25);
-	crateObject.translate(0,0,2);
+	const textureObject = new TextureObject({name: "Textur", program: textureProgram, id: 98, objFile: "./assets/models/cube-singlesided.obj", texture: "crate"});
+	await textureObject.prepare();
+
+	const videoObject = new VideoObject({name: "Video", program: videoProgram, id: 99, objFile: "./assets/models/cube-singlesided.obj", video: "paint"});
+	await videoObject.prepare();
+	videoObject.applyScale(0.9, 0.5, 0.9);
+	videoObject.translate(-1,0,-6);
 
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
@@ -91,7 +96,8 @@ async function init() {
 		gl.depthFunc(gl.LESS); // Restore the depth function
 
 		// Textured object
-		crateObject.draw();
+		textureObject.draw();
+		videoObject.draw();
 
 		// KONTINUIERLICHE ANIMATIONEN
 		if (solarSystem) {
