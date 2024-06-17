@@ -5,8 +5,9 @@ import { ObjectPicker } from "./objectPicker.js";
 import { createNewSkybox, drawNewSkybox } from "./skybox.js";
 import { initCamera, sensitivity, updateCamera } from "./camera.js";
 import { SceneGraph } from "./sceneGraph.js";
-import { createPrograms, defaultProgram } from "./shaderPrograms.js";
+import { createPrograms, defaultProgram, textureProgram } from "./shaderPrograms.js";
 import { GameManager } from "./gameManager.js";
+import { TextureObject } from "./objects/textureObject.js";
 
 ("use strict");
 
@@ -70,6 +71,11 @@ async function init() {
 	const solarSystem = sceneGraph.allGroups.find((group) => group.name === "Sonnensystem");
 	const earthGroup = sceneGraph.allGroups.find((group) => group.name === "Erdgruppe");
 
+	const crateObject = new TextureObject({name: "Crate", program: textureProgram, id: 99, objFile: "./assets/models/cube-singlesided.obj", texture: "crate"});
+	await crateObject.prepare();
+	crateObject.applyScale(0.25, 0.25, 0.25);
+	crateObject.translate(0,0,2);
+
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
 		updateCamera(Global.viewMatrix, mat4);
@@ -83,6 +89,9 @@ async function init() {
 
 		// Then draw the game objects
 		gl.depthFunc(gl.LESS); // Restore the depth function
+
+		// Textured object
+		crateObject.draw();
 
 		// KONTINUIERLICHE ANIMATIONEN
 		if (solarSystem) {
