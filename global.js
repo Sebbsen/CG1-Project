@@ -18,6 +18,9 @@ export class Global {
 	static sunPosition = [0, 10, 0];
 	static sunDirection = [1, 1, 0];
 	static ambientLightColor = [0, 0.1, 0.2, 1];
+	static fogColor = [0.5, 0.5, 0.5, 1.0];
+	static fogNear = 1;
+	static fogFar = 20;
 	static pointLightPosition1 = [0, 1.5, 0];
 	static pointLightColor1 = [1, 0.8, 0.5, 1];
 

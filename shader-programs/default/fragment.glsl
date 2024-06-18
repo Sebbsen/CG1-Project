@@ -2,7 +2,7 @@ precision mediump float;
 
 varying vec3 fragNormal;
 varying vec3 fragPosition;
-varying vec4 fragColor;
+varying float fogDepth;
 
 uniform vec4 emissive;
 uniform vec4 ambientLight;
@@ -13,6 +13,11 @@ uniform float shininess;
 
 uniform vec3 sunPosition;
 uniform vec3 sunDirection;
+
+uniform vec4 fogColor;
+uniform float fogNear;
+uniform float fogFar;
+
 uniform vec3 pointLightPosition1;
 uniform vec4 pointLightColor1;
 
@@ -62,5 +67,8 @@ void main() {
     vec3 reflect_vector = (2.0 * dot(normal, normalize(sunDirection))) * normal - normalize(sunDirection);
     vec4 specular = pow(max(dot(normal, reflect_vector), 0.0), shininess) * specularMaterial;
 
-    gl_FragColor = emissive + ambient + diffuse + diffuse_point_light_1 + specular;
+    vec4 color = emissive + ambient + diffuse + diffuse_point_light_1 + specular;
+    float fogAmount = smoothstep(fogNear, fogFar, fogDepth);
+
+    gl_FragColor = mix(color, fogColor, fogAmount);
 }

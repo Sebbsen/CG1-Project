@@ -426,6 +426,18 @@ export class GameObject {
 			gl.getUniformLocation(this.program, "sunDirection"),
 			Global.sunDirection
 		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "fogColor"),
+			Global.fogColor
+		);
+		gl.uniform1f(
+			gl.getUniformLocation(this.program, "fogNear"),
+			Global.fogNear
+		);
+		gl.uniform1f(
+			gl.getUniformLocation(this.program, "fogFar"),
+			Global.fogFar
+		);
 		gl.uniform3fv(
 			gl.getUniformLocation(this.program, "pointLightPosition1"),
 			Global.pointLightPosition1
