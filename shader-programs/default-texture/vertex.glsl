@@ -13,6 +13,7 @@ attribute vec2 aTexture;
 varying vec3 fragNormal;
 varying vec3 fragPosition;
 varying highp vec2 fragTextureCoord;
+varying float fogDepth;
 
 void main() {
     gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(aPosition, 1.0);
@@ -24,4 +25,5 @@ void main() {
     fragNormal = normal;
     fragPosition = (worldMatrix * vec4(aPosition, 1.0)).xyz;
     fragTextureCoord = aTexture;
+    fogDepth = -(viewMatrix * worldMatrix * vec4(aPosition, 1.0)).z;
 }

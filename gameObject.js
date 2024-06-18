@@ -446,6 +446,14 @@ export class GameObject {
 			gl.getUniformLocation(this.program, "pointLightColor1"),
 			Global.pointLightColor1
 		);
+		gl.uniform3fv(
+			gl.getUniformLocation(this.program, "pointLightPosition2"),
+			Global.pointLightPosition2
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "pointLightColor2"),
+			Global.pointLightColor2
+		);
 	}
 
 	/**

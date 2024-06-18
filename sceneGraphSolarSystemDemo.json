@@ -22,7 +22,9 @@
 					"pickable": {
 						"type": "useable",
 						"needsItem": "Mond"
-					}
+					},
+					"diffuseMaterial": [1,0.7,0,1],
+					"specularMaterial": [0,0,0,0]
 				},
 				{
 					"type": "group",

@@ -20,6 +20,8 @@ uniform float fogFar;
 
 uniform vec3 pointLightPosition1;
 uniform vec4 pointLightColor1;
+uniform vec3 pointLightPosition2;
+uniform vec4 pointLightColor2;
 
 uniform mat4 worldMatrix;
 uniform mat4 viewMatrix;
@@ -55,6 +57,11 @@ void main() {
     float distance_1 = distance(fragPosition, pointLightPosition1);
     float attenuation_1 = quadratic(distance_1, 0.5, 0.0, 0.2);
     vec4 diffuse_point_light_1 = max(dot(point_light_direction_1, normal), 0.0) * attenuation_1 * pointLightColor1;
+    
+    vec3 point_light_direction_2 = normalize(pointLightPosition2 - fragPosition);
+    float distance_2 = distance(fragPosition, pointLightPosition2);
+    float attenuation_2 = quadratic(distance_2, 0.5, 0.0, 0.2);
+    vec4 diffuse_point_light_2 = max(dot(point_light_direction_2, normal), 0.0) * attenuation_2 * pointLightColor2;
 
 
     // ambient light komponentenweise multipliziert mit material
@@ -67,7 +74,7 @@ void main() {
     vec3 reflect_vector = (2.0 * dot(normal, normalize(sunDirection))) * normal - normalize(sunDirection);
     vec4 specular = pow(max(dot(normal, reflect_vector), 0.0), shininess) * specularMaterial;
 
-    vec4 color = emissive + ambient + diffuse + diffuse_point_light_1 + specular;
+    vec4 color = emissive + ambient + diffuse + diffuse_point_light_1 + diffuse_point_light_2 + specular;
     float fogAmount = smoothstep(fogNear, fogFar, fogDepth);
 
     gl_FragColor = mix(color, fogColor, fogAmount);
