@@ -1,13 +1,31 @@
 import { gl } from "./script.js";
 import { Mat4 } from "./mat4.js";
 import { Global } from "./global.js";
+import { deltaTime } from "./script.js";
 
 export class GameObject {
 	/**
 	 *
 	 * @param {WebGLProgram} program
 	 */
-	constructor({name = 'noName', id = 0, program, objFile, translation, rotation, scale, faceCulling, transparent, }) {
+	constructor({
+		name = "noName",
+		id = 0,
+		program,
+		objFile,
+		translation = [0, 0, 0],
+		rotation = [0, 0, 0],
+		scale = [1, 1, 1],
+		faceCulling = true,
+		transparent = false,
+		pickable = false,
+		disabled = false,
+		emissive = [0, 0, 0, 1],
+		ambientMaterial = [0.1, 0.2, 0.5, 1],
+		diffuseMaterial = [1, 1, 1, 1],
+		specularMaterial = [1, 1, 1, 1],
+		shininess = 50.0,
+	}) {
 		this.name = name;
 		this.id = id;
 		this.program = program;
@@ -17,6 +35,13 @@ export class GameObject {
 		this.scale = scale;
 		this.faceCulling = faceCulling;
 		this.isTransparent = transparent;
+		this.pickable = pickable;
+		this.disabled = disabled;
+		this.emissive = emissive;
+		this.ambientMaterial = ambientMaterial;
+		this.diffuseMaterial = diffuseMaterial;
+		this.specularMaterial = specularMaterial;
+		this.shininess = shininess;
 
 		this.vertexCoordinates;
 		this.normalCoordinates;
@@ -36,6 +61,8 @@ export class GameObject {
 	}
 
 	draw() {
+		if (this.disabled) return;
+
 		gl.useProgram(this.program);
 		this.loadAttributes();
 		this.loadUniforms();
@@ -46,43 +73,166 @@ export class GameObject {
 			gl.disable(gl.CULL_FACE);
 		}
 
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
 	}
 
 	drawPicking() {
+		if (this.disabled) return;
+
 		gl.useProgram(this.program);
 		this.loadAttributes();
 		this.loadUniforms();
 
 		gl.uniform1i(gl.getUniformLocation(this.program, "uPicking"), 1);
-		gl.uniform3fv(gl.getUniformLocation(this.program, "uPickingColor"), [((this.id >> 16) & 0xFF) / 255, ((this.id >> 8) & 0xFF) / 255, (this.id & 0xFF) / 255,]);
+		gl.uniform3fv(gl.getUniformLocation(this.program, "uPickingColor"), [
+			((this.id >> 16) & 0xff) / 255,
+			((this.id >> 8) & 0xff) / 255,
+			(this.id & 0xff) / 255,
+		]);
 		gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
 		gl.uniform1i(gl.getUniformLocation(this.program, "uPicking"), 0);
 	}
 
 	async prepare() {
-		// gl.useProgram(this.program);
-
 		await this.loadModelData(this.objFile);
 		this.prepareBuffer();
-		// this.loadAttributes();
-		// this.loadUniforms();
 	}
 
-	translate(x, y ,z) {
+	// Funktion zum animieren des Objekts
+	animateTranslation(from, to, duration) {
+		const startTime = performance.now(); // Startzeit speichern
+
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const animate = (currentTime) => {
+			const elapsedTime = currentTime - startTime; // vergangene Zeit seit Start
+			const t = Math.min(elapsedTime / duration, 1); // Normierte Zeit (0 bis 1)
+
+			// Berechne die aktuellen Koordinaten nach der Zeit t
+			const currentX = from[0] + deltaX * t;
+			const currentY = from[1] + deltaY * t;
+			const currentZ = from[2] + deltaZ * t;
+
+			this.translation = [currentX, currentY, currentZ]; // setzen der neuen Position
+
+			if (t < 1) {
+				requestAnimationFrame(animate);
+			}
+		};
+
+		requestAnimationFrame(animate);
+	}
+
+	animateRotation(from, to, duration) {
+		const startTime = performance.now(); // Startzeit speichern
+
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const animate = (currentTime) => {
+			const elapsedTime = currentTime - startTime; // vergangene Zeit seit Start
+			const t = Math.min(elapsedTime / duration, 1); // Normierte Zeit (0 bis 1)
+
+			// Berechne die aktuellen Koordinaten nach der Zeit t
+			const currentX = from[0] + deltaX * t;
+			const currentY = from[1] + deltaY * t;
+			const currentZ = from[2] + deltaZ * t;
+
+			this.rotation = [currentX, currentY, currentZ]; // setzen der neuen Rotation
+
+			if (t < 1) {
+				requestAnimationFrame(animate);
+			}
+		};
+
+		requestAnimationFrame(animate);
+	}
+
+	animateScale(from, to, duration) {
+		const startTime = performance.now(); // Startzeit speichern
+
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const animate = (currentTime) => {
+			const elapsedTime = currentTime - startTime; // vergangene Zeit seit Start
+			const t = Math.min(elapsedTime / duration, 1); // Normierte Zeit (0 bis 1)
+
+			// Berechne die aktuellen Koordinaten nach der Zeit t
+			const currentX = from[0] + deltaX * t;
+			const currentY = from[1] + deltaY * t;
+			const currentZ = from[2] + deltaZ * t;
+
+			this.scale = [currentX, currentY, currentZ]; // setzen der neuen Skalierung
+
+			if (t < 1) {
+				requestAnimationFrame(animate);
+			}
+		};
+
+		requestAnimationFrame(animate);
+	}
+
+	animateTranslationPerFrame(from, to) {
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const currentX = from[0] + deltaX * deltaTime;
+		const currentY = from[1] + deltaY * deltaTime;
+		const currentZ = from[2] + deltaZ * deltaTime;
+
+		this.translation = [currentX, currentY, currentZ]; // setzen der neuen Translation
+	}
+
+	animateRotationPerFrame(from, to) {
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const currentX = from[0] + deltaX * deltaTime;
+		const currentY = from[1] + deltaY * deltaTime;
+		const currentZ = from[2] + deltaZ * deltaTime;
+
+		this.rotation = [currentX, currentY, currentZ]; // setzen der neuen Rotation
+	}
+
+	animateScalePerFrame(from, to) {
+		// Differenz berechnen
+		const deltaX = to[0] - from[0];
+		const deltaY = to[1] - from[1];
+		const deltaZ = to[2] - from[2];
+
+		const currentX = from[0] + deltaX * deltaTime;
+		const currentY = from[1] + deltaY * deltaTime;
+		const currentZ = from[2] + deltaZ * deltaTime;
+
+		this.scale = [currentX, currentY, currentZ]; // setzen der neuen Skalierung
+	}
+
+	translate(x, y, z) {
 		this.worldMatrix = Mat4.translate(this.worldMatrix, [x, y, z]);
+	}
 
-		gl.useProgram(this.program);
-
-		gl.uniformMatrix4fv(
-			this.worldMatrixUniformLocation,
-			false,
-			this.worldMatrix
-		);
+	applyScale(x, y, z) {
+		this.worldMatrix = Mat4.scale(this.worldMatrix, [x, y, z]);
 	}
 
 	rotateX(degrees) {
-		this.worldMatrix = Mat4.rotateX(this.worldMatrix, degrees / (2 * Math.PI));
+		this.worldMatrix = Mat4.rotateX(
+			this.worldMatrix,
+			degrees / (2 * Math.PI)
+		);
 
 		gl.useProgram(this.program);
 
@@ -92,7 +242,7 @@ export class GameObject {
 			this.worldMatrix
 		);
 	}
-	
+
 	rotateY(degrees) {
 		this.worldMatrix = Mat4.rotateY(this.worldMatrix, degrees / Math.PI);
 
@@ -139,8 +289,6 @@ export class GameObject {
 		let normalCoordinates = this.loadOBJNormalCoordinates(objFile);
 		let textureCoordinates = this.loadOBJTextureCoordinates(objFile);
 
-		// console.log("loadModelData() - vertexCoordinates: ", vertexCoordinates);
-
 		let vertexIndices = this.loadOBJVertexIndices(objFile);
 		let normalIndices = this.loadOBJNormalIndices(objFile);
 		let textureIndices = this.loadOBJTextureIndices(objFile);
@@ -149,7 +297,6 @@ export class GameObject {
 		vertexIndices.forEach(function (value, i) {
 			vertices.push(vertexCoordinates[value]);
 		});
-		// console.log("loadModelData() - vertices: ", vertices);
 
 		let normals = [];
 		normalIndices.forEach(function (value, i) {
@@ -165,16 +312,12 @@ export class GameObject {
 		this.vertexCoordinates = new Float32Array(vertices.flat());
 		this.normalCoordinates = new Float32Array(normals.flat());
 		this.textureCoordinates = new Float32Array(textures.flat());
-
-		// console.log("loadModelData() - vertexCoordinates: ", this.vertexCoordinates);
 	}
 
 	prepareBuffer() {
 		this.vertexBufferObject = gl.createBuffer();
 		this.normalBufferObject = gl.createBuffer();
 		this.textureBufferObject = gl.createBuffer();
-
-		// console.log(this.vertexBufferObject);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBufferObject);
 		gl.bufferData(gl.ARRAY_BUFFER, this.vertexCoordinates, gl.STATIC_DRAW);
@@ -183,10 +326,6 @@ export class GameObject {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBufferObject);
 		gl.bufferData(gl.ARRAY_BUFFER, this.textureCoordinates, gl.STATIC_DRAW);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-		// console.log("prepareBuffer() - vertexCoordinates: ", this.vertexCoordinates);
-		// console.log("prepareBuffer() - normalCoordinates: ", this.normalCoordinates);
-		// console.log("prepareBuffer() - textureCoordinates: ", this.textureCoordinates);
 	}
 
 	loadAttributes() {
@@ -222,22 +361,6 @@ export class GameObject {
 		);
 		gl.enableVertexAttribArray(normalAttributeLocation);
 
-		// texture
-		// gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBufferObject);
-		// let textureAttributeLocation = gl.getAttribLocation(
-		// 	this.program,
-		// 	"aTexture"
-		// );
-		// gl.vertexAttribPointer(
-		// 	textureAttributeLocation,
-		// 	2,
-		// 	gl.FLOAT,
-		// 	false,
-		// 	2 * Float32Array.BYTES_PER_ELEMENT,
-		// 	0 * Float32Array.BYTES_PER_ELEMENT
-		// );
-		// gl.enableVertexAttribArray(textureAttributeLocation);
-
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
 
@@ -255,19 +378,81 @@ export class GameObject {
 			"projectionMatrix"
 		);
 
-		Mat4.identity(this.worldMatrix);
-		this.translate(this.translation[0], this.translation[1], this.translation[2]);
-
 		gl.uniformMatrix4fv(
 			this.worldMatrixUniformLocation,
 			false,
 			this.worldMatrix
 		);
-		gl.uniformMatrix4fv(this.viewMatrixUniformLocation, false, Global.viewMatrix);
+		gl.uniformMatrix4fv(
+			this.viewMatrixUniformLocation,
+			false,
+			Global.viewMatrix
+		);
 		gl.uniformMatrix4fv(
 			this.projectionMatrixUniformLocation,
 			false,
 			Global.projectionMatrix
+		);
+
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "emissive"),
+			this.emissive
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "ambientLight"),
+			Global.ambientLightColor
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "ambientMaterial"),
+			this.ambientMaterial
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "diffuseMaterial"),
+			this.diffuseMaterial
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "specularMaterial"),
+			this.specularMaterial
+		);
+		gl.uniform1f(
+			gl.getUniformLocation(this.program, "shininess"),
+			this.shininess
+		);
+		gl.uniform3fv(
+			gl.getUniformLocation(this.program, "sunPosition"),
+			Global.sunPosition
+		);
+		gl.uniform3fv(
+			gl.getUniformLocation(this.program, "sunDirection"),
+			Global.sunDirection
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "fogColor"),
+			Global.fogColor
+		);
+		gl.uniform1f(
+			gl.getUniformLocation(this.program, "fogNear"),
+			Global.fogNear
+		);
+		gl.uniform1f(
+			gl.getUniformLocation(this.program, "fogFar"),
+			Global.fogFar
+		);
+		gl.uniform3fv(
+			gl.getUniformLocation(this.program, "pointLightPosition1"),
+			Global.pointLightPosition1
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "pointLightColor1"),
+			Global.pointLightColor1
+		);
+		gl.uniform3fv(
+			gl.getUniformLocation(this.program, "pointLightPosition2"),
+			Global.pointLightPosition2
+		);
+		gl.uniform4fv(
+			gl.getUniformLocation(this.program, "pointLightColor2"),
+			Global.pointLightColor2
 		);
 	}
 

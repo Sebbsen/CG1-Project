@@ -1,9 +1,14 @@
 import { Global } from "./global.js";
 import { createProgram } from "./program.js";
 import { GameObject } from "./gameObject.js";
-import { initCamera, updateCamera } from "./camera.js";
 import { ObjectPicker } from "./objectPicker.js";
 import { createNewSkybox, drawNewSkybox } from "./skybox.js";
+import { initCamera, sensitivity, updateCamera } from "./camera.js";
+import { SceneGraph } from "./sceneGraph.js";
+import { createPrograms, defaultProgram, textureProgram, videoProgram } from "./shaderPrograms.js";
+import { GameManager } from "./gameManager.js";
+import { TextureObject } from "./objects/textureObject.js";
+import { VideoObject } from "./objects/videoObject.js";
 
 ("use strict");
 
@@ -13,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /** @type {HTMLCanvasElement} */
 let canvas = document.getElementById("canvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 // Neben webgl gibt es auch webgl2 (mehr Funktionen) und webgpu (neuerer Standard)
 /** @type {WebGLRenderingContext} */
@@ -21,7 +28,9 @@ if (!gl) {
 	console.error("WebGL does not work and might not be supported");
 }
 
+
 let then = window.performance.now();
+export let deltaTime = 1;
 
 async function init() {
 	initCamera(canvas);
@@ -34,53 +43,48 @@ async function init() {
 	gl.enable(gl.CULL_FACE);
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-	let defaultProgram = await createProgram(
-		gl,
-		"./shader-programs/default/vertex.glsl",
-		"./shader-programs/default/fragment.glsl"
-	);
+	await createPrograms();
 
-	const response = await fetch("./gameObjects.json");
-	const gameObjectsData = await response.json();
+	let sceneGraph = new SceneGraph();
+	// await sceneGraph.init("./sceneGraphSolarSystemDemo.json");
+	await sceneGraph.init("./sceneGraph.json");
+	console.log(sceneGraph);
 
-	const gameObjects = await Promise.all(gameObjectsData.map(async (data) => {
-		let program = defaultProgram;
-		if (data.program === "defaultProgram") {
-			program = defaultProgram;
-		}
-		// Add more conditions if there are more programs
+	const pickableObjects = sceneGraph.pickableObjects;
 
-		let gameObject = new GameObject({
-			program: program,
-			objFile: data.objFile,
-			translation: data.translation,
-			rotation: data.rotation,
-			scale: data.scale,
-			faceCulling: data.faceCulling,
-			transparent: data.transparent,
-			id: data.id,
-			name: data.name
-		});
-		await gameObject.prepare();
-		return gameObject;
-	}));
+	const objectPicker = new ObjectPicker(gl, canvas, pickableObjects);
 
 	// Init Object Picker
-	const objectPicker = new ObjectPicker(gl, canvas, gameObjects);
 
 	// define skybox images
 	const skybox = await createNewSkybox(gl, {
-		negx: 'assets/skybox/nx.png',
-		negy: 'assets/skybox/ny.png',
-		negz: 'assets/skybox/nz.png',
-		posx: 'assets/skybox/px.png',
-		posy: 'assets/skybox/py.png',
-		posz: 'assets/skybox/pz.png',
+		negx: "assets/skybox/nx.png",
+		negy: "assets/skybox/ny.png",
+		negz: "assets/skybox/nz.png",
+		posx: "assets/skybox/px.png",
+		posy: "assets/skybox/py.png",
+		posz: "assets/skybox/pz.png",
 	});
+
+	Global.skybox = skybox;
+
+	const gameManager = new GameManager();
+
+	const solarSystem = sceneGraph.allGroups.find((group) => group.name === "Sonnensystem");
+	const earthGroup = sceneGraph.allGroups.find((group) => group.name === "Erdgruppe");
+
+	const textureObject = new TextureObject({name: "Textur", program: textureProgram, id: 98, objFile: "./assets/models/cube-singlesided.obj", texture: "crate"});
+	await textureObject.prepare();
+
+	const videoObject = new VideoObject({name: "Video", program: videoProgram, id: 99, objFile: "./assets/models/cube-singlesided.obj", video: "paint"});
+	await videoObject.prepare();
+	videoObject.applyScale(0.9, 0.5, 0.9);
+	videoObject.translate(-1,0,-6);
 
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
 		updateCamera(Global.viewMatrix, mat4);
+
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 		// Draw the skybox first
@@ -90,7 +94,25 @@ async function init() {
 
 		// Then draw the game objects
 		gl.depthFunc(gl.LESS); // Restore the depth function
-		gameObjects.forEach(obj => obj.draw());
+
+		// Textured object
+		textureObject.draw();
+		videoObject.draw();
+
+		// KONTINUIERLICHE ANIMATIONEN
+		if (solarSystem) {
+			const startRotY = solarSystem.rotation;
+			const endRotY = [startRotY[0], startRotY[1] - 1, startRotY[2]];
+			solarSystem.animateRotationPerFrame(startRotY, endRotY);
+		}
+		
+		if (earthGroup) {
+			const startRotY = earthGroup.rotation;
+			const endRotY = [startRotY[0], startRotY[1] - 1, startRotY[2]];
+			earthGroup.animateRotationPerFrame(startRotY, endRotY);
+		}
+
+		sceneGraph.draw();
 
 		updateDebugInfoPanel(now);
 
@@ -99,30 +121,44 @@ async function init() {
 
 	requestAnimationFrame(loop);
 
+	// ANIMATION BEISPIEL
+	// Animieren eines bestimmten Objekts
+	// const ObjectToAnimate = sceneGraph.allObjects.find(
+	// 	(obj) => obj.name === "Erde"
+	// ); // Beispielobjekt "Erde"
+	// if (ObjectToAnimate) {
+	// 	const startPos = ObjectToAnimate.translation;
+	// 	const endPos = [startPos[0] - 1, startPos[1] - 1, startPos[2]];
+	// 	ObjectToAnimate.animateTranslation(startPos, endPos, 2000); // Animation in 2000ms
+	// }
 
 	//Pick Object
-	canvas.addEventListener('click', (event) => {
-        const x = canvas.width/2;
-        const y = canvas.height/2;
-        const pickedObj = objectPicker.pick(x, y);
-		console.log('Picked Obj:', pickedObj);
-        if (pickedObj) {
-            console.log('Picked ID:', pickedObj.id);
-            document.getElementById("picked_obj").textContent = "Picked Obj: " + pickedObj.name;
-        }
-    });
+	canvas.addEventListener("click", (event) => {
+		const x = canvas.width / 2;
+		const y = canvas.height / 2;
+		const pickedObj = objectPicker.pick(x, y);
+		console.log("Picked Obj:", pickedObj);
+		if (pickedObj) {
+			console.log("Picked ID:", pickedObj.id);
+			document.getElementById("picked_obj").textContent =
+				"Picked Obj: " + pickedObj.name;
+			gameManager.handlePickedObject(pickedObj);
+		}
+
+		// ANIMATION BEISPIEL
+		// Animieren von pickedObj
+		if (pickedObj) {
+			const startPos = pickedObj.translation;
+			const endPos = [startPos[0] + 5, startPos[1] + 5, startPos[2]];
+			pickedObj.animateTranslation(startPos, endPos, 2000); // Animation in 2000ms
+		}
+	});
 
 	function updateDebugInfoPanel(now) {
 		now *= 0.001;
-		const deltaTime = now - then;
+		deltaTime = now - then;
 		then = now;
 		const fps = 1 / deltaTime;
 		document.getElementById("fps").textContent = "FPS: " + fps.toFixed(0);
 	}
 }
-
-// New Skybox functions
-
-
-
-

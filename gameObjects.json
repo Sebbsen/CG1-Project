@@ -1,36 +1,35 @@
 [
-    {
-      "name": "Teapot",
-      "id": 1,
-      "program": "defaultProgram",
-      "objFile": "./assets/models/teapot.obj",
-      "translation": [0, -2, 0],
-      "rotation": [0, 0, 0],
-      "scale": [1, 1, 1],
-      "faceCulling": false,
-      "transparent": false
-    },
-    {
-      "name": "Cube",
-      "id": 2,
-      "program": "defaultProgram",
-      "objFile": "./assets/models/cube.obj",
-      "translation": [2, 1, 0],
-      "rotation": [0, 0, 0],
-      "scale": [1, 1, 1],
-      "faceCulling": true,
-      "transparent": false
-    },
-    {
-      "name": "Suzanne",
-      "id": 3,
-      "program": "defaultProgram",
-      "objFile": "./assets/models/suzanne.obj",
-      "translation": [0, 0, 3],
-      "rotation": [0, 0, 0],
-      "scale": [1, 1, 1],
-      "faceCulling": true,
-      "transparent": false
-    }
-  ]
-  
+	{
+		"name": "Teapot",
+		"id": 1,
+		"program": "defaultProgram",
+		"objFile": "./assets/models/teapot.obj",
+		"translation": [0, -2, 0],
+		"rotation": [0, 0, 0],
+		"scale": [1, 1, 1],
+		"faceCulling": false,
+		"transparent": false
+	},
+	{
+		"name": "Cube",
+		"id": 2,
+		"program": "defaultProgram",
+		"objFile": "./assets/models/cube.obj",
+		"translation": [2, 1, 0],
+		"rotation": [0, 0, 0],
+		"scale": [1, 1, 1],
+		"faceCulling": true,
+		"transparent": false
+	},
+	{
+		"name": "Suzanne",
+		"id": 3,
+		"program": "defaultProgram",
+		"objFile": "./assets/models/suzanne.obj",
+		"translation": [0, 0, 3],
+		"rotation": [0, 0, 0],
+		"scale": [1, 1, 1],
+		"faceCulling": true,
+		"transparent": false
+	}
+]
