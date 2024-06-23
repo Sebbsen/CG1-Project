@@ -60,12 +60,12 @@ async function init() {
 
 	// define skybox images
 	const skybox = await createNewSkybox(gl, {
-		negx: "assets/skybox/meadow-high-res/nx.png",
-		negy: "assets/skybox/meadow-high-res/ny.png",
-		negz: "assets/skybox/meadow-high-res/nz.png",
-		posx: "assets/skybox/meadow-high-res/px.png",
-		posy: "assets/skybox/meadow-high-res/py.png",
-		posz: "assets/skybox/meadow-high-res/pz.png",
+		negx: "assets/skybox/nx.png",
+		negy: "assets/skybox/ny.png",
+		negz: "assets/skybox/nz.png",
+		posx: "assets/skybox/px.png",
+		posy: "assets/skybox/py.png",
+		posz: "assets/skybox/pz.png",
 	});
 
 	Global.skybox = skybox;
