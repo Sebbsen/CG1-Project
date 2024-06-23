@@ -1,5 +1,8 @@
+
+
 export class GameManager {
-    constructor() {
+    constructor(gameObjects) {
+        this.gameObjects = gameObjects;
         this.inventory = [];
     }
 
@@ -45,8 +48,10 @@ export class GameManager {
             return true;
         } else if (pickedObj.pickable.type === "useable") {
             if (this.tryToUseItem(pickedObj.pickable)) {
-                if (["DrawerLeft", "DrawerRightUpper", "DrawerRightLower"].includes(pickedObj.name)) {
+                if (["DrawerRightUpper", "DrawerRightLower"].includes(pickedObj.name)) {
                     this.handleDrawerAnimation(pickedObj)
+                } else if (["DrawerLeft"].includes(pickedObj.name)) {
+                    this.handleDrawerAnimation(pickedObj, true)
                 } else if (["LaptopDisplay", "Laptop"].includes(pickedObj.name)) {
                     this.handleLaptopClick(pickedObj)
                 }
@@ -56,7 +61,7 @@ export class GameManager {
         return false;
     }
 
-    handleDrawerAnimation(pickedObj) {
+    handleDrawerAnimation(pickedObj, hasNote) {
         const startPos = pickedObj.translation;
         let endPos = startPos;
         if(pickedObj.isOpen) {
@@ -67,10 +72,19 @@ export class GameManager {
             pickedObj.isOpen = true;
         }
         pickedObj.animateTranslation(startPos, endPos, 500);
+        
+        if (hasNote) {
+            let passwordObject = this.gameObjects.find(obj => obj.name === "Password")
+            if (passwordObject) {
+                passwordObject.animateTranslation(startPos, endPos, 500);
+            }
+        }
     }
 
     handleLaptopClick(pickedObj) {
-        alert('WOW! GEWONNEN!');
+        let LaptopDisplay = this.gameObjects.find(obj => obj.name === "LaptopDisplay")
+
+        LaptopDisplay.videoSrc.play();
     }
 
 }

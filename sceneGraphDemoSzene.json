@@ -79,6 +79,26 @@
 						},
 						{
 							"type": "object",
+							"name": "Password",
+							"id": 51,
+							"program": "multiTextureProgram",
+							"objFile": "./assets/models/note.obj",
+							"textureColor": "note",
+							"textureNormal": "note-n",
+							"textureRoughness": "note-r",
+							"translation": [0, 0, 0],
+							"rotation": [0, 0, 0],
+							"scale": [1, 1, 1],
+							"faceCulling": true,
+							"transparent": false,
+							"diffuseMaterial": [1, 1, 1, 1],
+							"pickable": {
+								"type": "collectable",
+								"needsItem": null
+							}
+						},
+						{
+							"type": "object",
 							"name": "DrawerRightUpper",
 							"id": 50,
 							"program": "textureProgram",
@@ -92,24 +112,6 @@
 							"diffuseMaterial": [1, 1, 1, 1],
 							"pickable": {
 								"type": "useable",
-								"needsItem": null
-							}
-						},
-						{
-							"type": "object",
-							"name": "Password",
-							"id": 51,
-							"program": "textureProgram",
-							"objFile": "./assets/models/drawer-right_upper-trianguliert.obj",
-							"texture": "drawer-right-upper",
-							"translation": [0, 0, 0],
-							"rotation": [0, 0, 0],
-							"scale": [0.5, 0.5, 0.5],
-							"faceCulling": true,
-							"transparent": false,
-							"diffuseMaterial": [1, 1, 1, 1],
-							"pickable": {
-								"type": "collectable",
 								"needsItem": null
 							}
 						},

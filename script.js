@@ -70,7 +70,7 @@ async function init() {
 
 	Global.skybox = skybox;
 
-	const gameManager = new GameManager();
+	const gameManager = new GameManager(sceneGraph.pickableObjects);
 
 	const solarSystem = sceneGraph.allGroups.find((group) => group.name === "Sonnensystem");
 	const earthGroup = sceneGraph.allGroups.find((group) => group.name === "Erdgruppe");

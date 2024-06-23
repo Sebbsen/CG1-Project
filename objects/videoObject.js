@@ -74,7 +74,7 @@ export class VideoObject extends GameObject {
 			true
 		);
 
-		videoSrc.play();
+		//videoSrc.play();
 
 		let video = gl.createTexture();
 		this.videoTexture = video;
