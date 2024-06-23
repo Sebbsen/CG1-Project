@@ -211,6 +211,19 @@
 					"faceCulling": true,
 					"transparent": false,
 					"diffuseMaterial": [1, 1, 1, 1]
+				},
+				{
+					"type": "object",
+					"name": "reflectionObj",
+					"id": 120,
+					"program": "reflectionProgram",
+					"objFile": "./assets/models/earth.obj",
+					"translation": [10, 20, -25],
+					"rotation": [0, 0, 0],
+					"scale": [2, 2, 2],
+					"faceCulling": true,
+					"transparent": false,
+					"diffuseMaterial": [1, 1, 1, 1]
 				}
 			]
 		}

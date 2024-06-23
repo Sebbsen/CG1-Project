@@ -111,16 +111,37 @@ async function init() {
 
 	requestAnimationFrame(loop);
 
-	// ANIMATION BEISPIEL
-	// Animieren eines bestimmten Objekts
-	// const ObjectToAnimate = sceneGraph.allObjects.find(
-	// 	(obj) => obj.name === "Erde"
-	// ); // Beispielobjekt "Erde"
-	// if (ObjectToAnimate) {
-	// 	const startPos = ObjectToAnimate.translation;
-	// 	const endPos = [startPos[0] - 1, startPos[1] - 1, startPos[2]];
-	// 	ObjectToAnimate.animateTranslation(startPos, endPos, 2000); // Animation in 2000ms
-	// }
+	// Reflection Obj Animation
+	// Startet nach 4sek und loopt dann durch die positions
+	setTimeout(()=> {
+		const ObjectToAnimate = sceneGraph.allObjects.find(
+			(obj) => obj.name === "reflectionObj"
+		);
+		
+		if (ObjectToAnimate) {
+			const positions = [
+				[10, 20, -25], 
+				[10, 10, -25], 
+				[-10, 10, -25], 
+				[-10, 20, -25], 
+			];
+			let currentIndex = 0; // Start bei Position 1
+			const animationDuration = 4000; // Dauer der Animation (pos zu pos) in Millisekunden
+		
+			const animateObject = () => {
+				const startPos = positions[currentIndex];
+				currentIndex = (currentIndex + 1) % positions.length; // Nächste Position
+				const endPos = positions[currentIndex];
+				ObjectToAnimate.animateTranslation(startPos, endPos, animationDuration);
+			};
+		
+			// Intervall festlegen, das der Animationsdauer entspricht
+			setInterval(animateObject, animationDuration);
+		
+			// Starte die erste Animation sofort
+			animateObject();
+		}
+	}, 4000)
 
 	//Pick Object
 	canvas.addEventListener("click", (event) => {
