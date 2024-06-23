@@ -84,7 +84,7 @@
 							"program": "textureProgram",
 							"objFile": "./assets/models/note.obj",
 							"texture": "note",
-							"translation": [3, 3, 3],
+							"translation": [0, 0, 0],
 							"rotation": [0, 0, 0],
 							"scale": [1, 1, 1],
 							"faceCulling": true,
