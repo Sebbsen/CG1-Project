@@ -65,10 +65,10 @@ export class GameManager {
         const startPos = pickedObj.translation;
         let endPos = startPos;
         if(pickedObj.isOpen) {
-            endPos = [startPos[0], startPos[1], startPos[2]-3];
+            endPos = [0, 0, 0];
             pickedObj.isOpen = false;
         } else {
-            endPos = [startPos[0], startPos[1], startPos[2]+3];
+            endPos = [0, 0, 3];
             pickedObj.isOpen = true;
         }
         pickedObj.animateTranslation(startPos, endPos, 500);
