@@ -410,3 +410,18 @@ export function vectorCross(v1, v2) {
     result[2] = v1[0] * v2[1] - v1[1] * v2[0];
     return result;
 }
+
+/*Create lookAt Matrix*/
+export function lookAt(eye, look, up) {
+    let n = vecNormalize(vecSubtract(eye, look));
+    let u = vecNormalize(vectorCross(up, n));
+    let v = vecNormalize(vectorCross(n, u));
+    let lookAtMatrix = identity(4);
+    lookAtMatrix =
+        [u[0], v[0], n[0], 0,
+        u[1], v[1], n[1], 0,
+        u[2], v[2], n[2], 0,
+        vecScalar(vecMultiply(-1, u), eye), vecScalar(vecMultiply(-1, v), eye), vecScalar(vecMultiply(-1, n), eye), 1
+        ];
+    return lookAtMatrix;
+}
