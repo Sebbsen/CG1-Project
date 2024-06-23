@@ -77,7 +77,7 @@ async function init() {
 
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
-		updateCamera(Global.viewMatrix, mat4);
+		updateCamera(Global.viewMatrix);
 
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 

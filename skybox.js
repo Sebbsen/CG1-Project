@@ -1,5 +1,6 @@
 import { skyboxProgram } from "./shaderPrograms.js";
 import { Global } from "./global.js";
+import { identity, clone, multiplyMatrices } from "./matrix-functions/matFunctions.js"
 
 export async function createNewSkybox(gl, images) {
 
@@ -96,13 +97,14 @@ export function drawNewSkybox(gl, skybox) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, skybox.indexBuffer);
 
     // Remove translation from the view matrix
-    const viewMatrix = mat4.clone(Global.viewMatrix);
+    const viewMatrix = clone(Global.viewMatrix);
 	viewMatrix[12] = 0;
 	viewMatrix[13] = 0;
 	viewMatrix[14] = 0;
 	
-    const viewProjectionMatrix = mat4.create();
-    mat4.multiply(viewProjectionMatrix, Global.projectionMatrix, viewMatrix);
+    let viewProjectionMatrix = identity(4);
+    //mat4.multiply(viewProjectionMatrix, Global.projectionMatrix, viewMatrix);
+    viewProjectionMatrix = multiplyMatrices(Global.projectionMatrix, viewMatrix);
 
     gl.uniformMatrix4fv(viewProjectionLocation, false, viewProjectionMatrix);
     gl.activeTexture(gl.TEXTURE0);

@@ -43,7 +43,7 @@ function updateCameraRotation(event) {
     cameraRotY = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotY));
 }
 
-export function updateCamera(viewMatrix, mat4) {
+export function updateCamera(viewMatrix) {
     if (keys['w']) {
         cameraX += speed * Math.sin(cameraRotX);
         cameraZ += speed * Math.cos(cameraRotX);
