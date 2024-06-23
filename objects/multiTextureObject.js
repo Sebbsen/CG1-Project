@@ -59,6 +59,7 @@ export class MultiTextureObject extends GameObject {
 			gl.LINEAR_MIPMAP_LINEAR
 		);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.texImage2D(
 			gl.TEXTURE_2D,
 			0,
@@ -79,6 +80,7 @@ export class MultiTextureObject extends GameObject {
 			gl.LINEAR_MIPMAP_LINEAR
 		);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.texImage2D(
 			gl.TEXTURE_2D,
 			0,
@@ -99,6 +101,7 @@ export class MultiTextureObject extends GameObject {
 			gl.LINEAR_MIPMAP_LINEAR
 		);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.texImage2D(
 			gl.TEXTURE_2D,
 			0,
