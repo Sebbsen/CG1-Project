@@ -71,7 +71,11 @@
 							"scale": [1, 1, 1],
 							"faceCulling": true,
 							"transparent": false,
-							"diffuseMaterial": [1, 1, 1, 1]
+							"diffuseMaterial": [1, 1, 1, 1],
+							"pickable": {
+								"type": "useable",
+								"needsItem": null
+							}
 						},
 						{
 							"type": "object",
@@ -85,7 +89,29 @@
 							"scale": [1, 1, 1],
 							"faceCulling": true,
 							"transparent": false,
-							"diffuseMaterial": [1, 1, 1, 1]
+							"diffuseMaterial": [1, 1, 1, 1],
+							"pickable": {
+								"type": "useable",
+								"needsItem": null
+							}
+						},
+						{
+							"type": "object",
+							"name": "Password",
+							"id": 51,
+							"program": "textureProgram",
+							"objFile": "./assets/models/drawer-right_upper-trianguliert.obj",
+							"texture": "drawer-right-upper",
+							"translation": [0, 0, 0],
+							"rotation": [0, 0, 0],
+							"scale": [0.5, 0.5, 0.5],
+							"faceCulling": true,
+							"transparent": false,
+							"diffuseMaterial": [1, 1, 1, 1],
+							"pickable": {
+								"type": "collectable",
+								"needsItem": null
+							}
 						},
 						{
 							"type": "object",
@@ -99,7 +125,11 @@
 							"scale": [1, 1, 1],
 							"faceCulling": true,
 							"transparent": false,
-							"diffuseMaterial": [1, 1, 1, 1]
+							"diffuseMaterial": [1, 1, 1, 1],
+							"pickable": {
+								"type": "useable",
+								"needsItem": null
+							}
 						}
 					]
 				},
@@ -129,7 +159,11 @@
 					"scale": [1, 1, 1],
 					"faceCulling": true,
 					"transparent": false,
-					"diffuseMaterial": [1, 1, 1, 1]
+					"diffuseMaterial": [1, 1, 1, 1],
+					"pickable": {
+						"type": "useable",
+						"needsItem": "Password"
+					}
 				},
 				{
 					"type": "object",
@@ -142,7 +176,11 @@
 					"rotation": [0, 0, 0],
 					"scale": [1, 1, 1],
 					"faceCulling": true,
-					"transparent": false
+					"transparent": false,
+					"pickable": {
+						"type": "useable",
+						"needsItem": "Password"
+					}
 				},
 				{
 					"type": "object",

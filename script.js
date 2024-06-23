@@ -134,14 +134,6 @@ async function init() {
 				"Picked Obj: " + pickedObj.name;
 			gameManager.handlePickedObject(pickedObj);
 		}
-
-		// ANIMATION BEISPIEL
-		// Animieren von pickedObj
-		if (pickedObj) {
-			const startPos = pickedObj.translation;
-			const endPos = [startPos[0] + 5, startPos[1] + 5, startPos[2]];
-			pickedObj.animateTranslation(startPos, endPos, 2000); // Animation in 2000ms
-		}
 	});
 
 	function updateDebugInfoPanel(now) {

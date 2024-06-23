@@ -23,25 +23,54 @@ export class GameManager {
     }
 
     tryToUseItem(item) {
+        if (!item.needsItem) {
+            return true;
+        }
         if (this.inventoryContains(item.needsItem)) {
             this.removeFromInventory(item);
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     getInventory() {
         return this.inventory;
     }
 
-    handlePickedObject(object) {
-        if (object.pickable.type === "collectable") {
-            this.addToInventory(object);
+    handlePickedObject(pickedObj) {
+        
+        if (pickedObj.pickable.type === "collectable") {
+            this.addToInventory(pickedObj);
             return true;
-        } else if (object.pickable.type === "useable") {
-            return this.tryToUseItem(object.pickable);
+        } else if (pickedObj.pickable.type === "useable") {
+            if (this.tryToUseItem(pickedObj.pickable)) {
+                if (["DrawerLeft", "DrawerRightUpper", "DrawerRightLower"].includes(pickedObj.name)) {
+                    this.handleDrawerAnimation(pickedObj)
+                } else if (["LaptopDisplay", "Laptop"].includes(pickedObj.name)) {
+                    this.handleLaptopClick(pickedObj)
+                }
+            }
+            return this.tryToUseItem(pickedObj.pickable);
         }
         return false;
+    }
+
+    handleDrawerAnimation(pickedObj) {
+        const startPos = pickedObj.translation;
+        let endPos = startPos;
+        if(pickedObj.isOpen) {
+            endPos = [startPos[0], startPos[1], startPos[2]-3];
+            pickedObj.isOpen = false;
+        } else {
+            endPos = [startPos[0], startPos[1], startPos[2]+3];
+            pickedObj.isOpen = true;
+        }
+        pickedObj.animateTranslation(startPos, endPos, 500);
+    }
+
+    handleLaptopClick(pickedObj) {
+        alert('WOW! GEWONNEN!');
     }
 
 }
