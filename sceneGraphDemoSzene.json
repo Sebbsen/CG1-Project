@@ -1,0 +1,180 @@
+{
+	"type": "root",
+	"children": [
+		{
+			"type": "group",
+			"name": "Hauptgruppe",
+			"translation": [0, -10, -15],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1],
+			"children": [
+				{
+					"type": "object",
+					"name": "Walls",
+					"id": 10,
+					"program": "multiTextureProgram",
+					"objFile": "./assets/models/walls.obj",
+					"textureColor": "wall",
+					"textureNormal": "wall-n",
+					"textureRoughness": "wall-r",
+					"translation": [0, 0, 0],
+					"rotation": [0, 0, 0],
+					"scale": [1, 1, 1],
+					"faceCulling": true,
+					"transparent": false
+				},
+				{
+					"type": "object",
+					"name": "Window",
+					"id": 20,
+					"program": "transparentProgram",
+					"objFile": "./assets/models/window.obj",
+					"translation": [0, 0, 0],
+					"rotation": [0, 0, 0],
+					"scale": [1, 1, 1],
+					"faceCulling": false,
+					"transparent": true,
+					"diffuseMaterial": [1, 1, 1, 0.1]
+				},
+				{
+					"type": "group",
+					"name": "DeskGroup",
+					"translation": [0, 0, 0],
+					"rotation": [0, 0, 0],
+					"scale": [1, 1, 1],
+					"children": [
+						{
+							"type": "object",
+							"name": "Desk",
+							"id": 30,
+							"program": "multiTextureProgram",
+							"objFile": "./assets/models/desk_trianguliert.obj",
+							"textureColor": "desk-corpus",
+							"textureNormal": "desk-corpus-n",
+							"textureRoughness": "desk-corpus-r",
+							"translation": [0, 0, 0],
+							"rotation": [0, 0, 0],
+							"scale": [1, 1, 1],
+							"faceCulling": true,
+							"transparent": false,
+							"diffuseMaterial": [1, 1, 1, 1]
+						},
+						{
+							"type": "object",
+							"name": "DrawerLeft",
+							"id": 40,
+							"program": "textureProgram",
+							"objFile": "./assets/models/drawer-left_trianguliert.obj",
+							"texture": "drawer-left",
+							"translation": [0, 0, 0],
+							"rotation": [0, 0, 0],
+							"scale": [1, 1, 1],
+							"faceCulling": true,
+							"transparent": false,
+							"diffuseMaterial": [1, 1, 1, 1]
+						},
+						{
+							"type": "object",
+							"name": "DrawerRightUpper",
+							"id": 50,
+							"program": "textureProgram",
+							"objFile": "./assets/models/drawer-right_upper-trianguliert.obj",
+							"texture": "drawer-right-upper",
+							"translation": [0, 0, 0],
+							"rotation": [0, 0, 0],
+							"scale": [1, 1, 1],
+							"faceCulling": true,
+							"transparent": false,
+							"diffuseMaterial": [1, 1, 1, 1]
+						},
+						{
+							"type": "object",
+							"name": "DrawerRightLower",
+							"id": 60,
+							"program": "textureProgram",
+							"objFile": "./assets/models/drawer-right_lower-trianguliert.obj",
+							"texture": "drawer-right-lower",
+							"translation": [0, 0, 0],
+							"rotation": [0, 0, 0],
+							"scale": [1, 1, 1],
+							"faceCulling": true,
+							"transparent": false,
+							"diffuseMaterial": [1, 1, 1, 1]
+						}
+					]
+				},
+				{
+					"type": "object",
+					"name": "DeskLamp",
+					"id": 70,
+					"program": "textureProgram",
+					"objFile": "./assets/models/lamp_trianguliert.obj",
+					"texture": "desk-lamp",
+					"translation": [0, 0, 0],
+					"rotation": [0, 0, 0],
+					"scale": [1, 1, 1],
+					"faceCulling": true,
+					"transparent": false,
+					"diffuseMaterial": [1, 1, 1, 1]
+				},
+				{
+					"type": "object",
+					"name": "Laptop",
+					"id": 80,
+					"program": "textureProgram",
+					"objFile": "./assets/models/laptop_trianguliert.obj",
+					"texture": "laptop",
+					"translation": [0, 0, 0],
+					"rotation": [0, 0, 0],
+					"scale": [1, 1, 1],
+					"faceCulling": true,
+					"transparent": false,
+					"diffuseMaterial": [1, 1, 1, 1]
+				},
+				{
+					"type": "object",
+					"name": "LaptopDisplay",
+					"id": 90,
+					"program": "videoProgram",
+					"objFile": "./assets/models/laptop-display_trianguliert.obj",
+					"video": "paint",
+					"translation": [0, 0, 0],
+					"rotation": [0, 0, 0],
+					"scale": [1, 1, 1],
+					"faceCulling": true,
+					"transparent": false
+				},
+				{
+					"type": "object",
+					"name": "Seat",
+					"id": 100,
+					"program": "multiTextureProgram",
+					"objFile": "./assets/models/seat-trianguliert.obj",
+					"textureColor": "seat",
+					"textureNormal": "seat-n",
+					"textureRoughness": "seat-r",
+					"translation": [0, 0, 0],
+					"rotation": [0, 0, 0],
+					"scale": [1, 1, 1],
+					"faceCulling": true,
+					"transparent": false,
+					"diffuseMaterial": [1, 1, 1, 1]
+				},
+				{
+					"type": "object",
+					"name": "Trashcan",
+					"id": 110,
+					"program": "textureProgram",
+					"objFile": "./assets/models/trashcan_trianguliert.obj",
+					"texture": "trashcan",
+					"translation": [0, 0, 0],
+					"rotation": [0, 0, 0],
+					"scale": [1, 1, 1],
+					"faceCulling": true,
+					"transparent": false,
+					"diffuseMaterial": [1, 1, 1, 1]
+				}
+			]
+		}
+	]
+}
