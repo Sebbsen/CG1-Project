@@ -24,7 +24,9 @@ uniform vec4 pointLightColor1;
 uniform vec3 pointLightPosition2;
 uniform vec4 pointLightColor2;
 
-uniform sampler2D texture;
+uniform sampler2D textureColor;
+uniform sampler2D textureNormal;
+uniform sampler2D textureRoughness;
 
 uniform mat4 worldMatrix;
 uniform mat4 viewMatrix;
@@ -53,7 +55,13 @@ void main() {
     }
     vec3 normal = normalize(fragNormal);
 
-    vec4 texColor = texture2D(texture, fragTextureCoord);
+    vec4 texColor = texture2D(textureColor, fragTextureCoord);
+    vec3 texNormal = normalize(texture2D(textureNormal, fragTextureCoord).rgb);
+    float texRoughness = texture2D(textureRoughness, fragTextureCoord).r;
+    texRoughness = texRoughness * 120.0;
+
+    // texNormal = (texNormal + vec3(1.0)) / 2.0;
+    normal = normalize(vec3(normal.x + texNormal.x, normal.y + texNormal.y, normal.z + texNormal.z));
 
 
     // Licht-Berechnungen
@@ -78,7 +86,7 @@ void main() {
 
     // (max(reflect dot normal, 0))^shininess * (light color komponentenweise multipliziert mit material)
     vec3 reflect_vector = (2.0 * dot(normal, normalize(sunDirection))) * normal - normalize(sunDirection);
-    vec4 specular = pow(max(dot(normal, reflect_vector), 0.0), shininess) * texColor;
+    vec4 specular = pow(max(dot(normal, reflect_vector), 0.0), texRoughness) * texColor;
 
     vec4 color = emissive + ambient + diffuse + diffuse_point_light_1 + diffuse_point_light_2 + specular;
 

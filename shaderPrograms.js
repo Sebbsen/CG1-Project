@@ -5,6 +5,7 @@ export let defaultProgram;
 export let reflectionProgram;
 export let skyboxProgram;
 export let textureProgram;
+export let multiTextureProgram;
 export let videoProgram;
 export let transparentProgram;
 
@@ -34,6 +35,12 @@ export async function createPrograms() {
 		gl,
 		"./shader-programs/default-texture/vertex.glsl",
 		"./shader-programs/default-texture/fragment.glsl"
+	);
+	
+	multiTextureProgram = await createProgram(
+		gl,
+		"./shader-programs/multi-texture/vertex.glsl",
+		"./shader-programs/multi-texture/fragment.glsl"
 	);
 	
 	videoProgram = await createProgram(

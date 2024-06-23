@@ -3,6 +3,7 @@ import { GameObject } from "./gameObject.js";
 import { Group } from "./group.js";
 import {
 	defaultProgram,
+	multiTextureProgram,
 	reflectionProgram,
 	textureProgram,
 	transparentProgram,
@@ -13,6 +14,7 @@ import { Mat4 } from "./mat4.js";
 import { Transformation } from "./transformation.js";
 import { TextureObject } from "./objects/textureObject.js";
 import { VideoObject } from "./objects/videoObject.js";
+import { MultiTextureObject } from "./objects/multiTextureObject.js";
 
 export class SceneGraph {
 	constructor() {
@@ -55,9 +57,9 @@ export class SceneGraph {
 							: [0, 0, 0, 1],
 					});
 					await gameObject.prepare();
-	
+
 					this.data.push(gameObject);
-	
+
 					this.allObjects.push(gameObject);
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
@@ -82,9 +84,9 @@ export class SceneGraph {
 							: [0, 0, 0, 1],
 					});
 					await gameObject.prepare();
-	
+
 					this.data.push(gameObject);
-	
+
 					this.allObjects.push(gameObject);
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
@@ -109,9 +111,9 @@ export class SceneGraph {
 							: [0, 0, 0, 1],
 					});
 					await gameObject.prepare();
-	
+
 					this.data.push(gameObject);
-	
+
 					this.allObjects.push(gameObject);
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
@@ -121,6 +123,35 @@ export class SceneGraph {
 						program: textureProgram,
 						objFile: element.objFile,
 						texture: element.texture,
+						translation: element.translation,
+						rotation: element.rotation,
+						scale: element.scale,
+						faceCulling: element.faceCulling,
+						transparent: element.transparent,
+						id: element.id,
+						name: element.name,
+						pickable: element.pickable,
+						diffuseMaterial: element.diffuseMaterial
+							? element.diffuseMaterial
+							: [0, 0, 0, 1],
+						specularMaterial: element.specularMaterial
+							? element.specularMaterial
+							: [0, 0, 0, 1],
+					});
+					await gameObject.prepare();
+
+					this.data.push(gameObject);
+					this.allObjects.push(gameObject);
+					if (gameObject.pickable) {
+						this.pickableObjects.push(gameObject);
+					}
+				} else if (element.program === "multiTextureProgram") {
+					let gameObject = new MultiTextureObject({
+						program: multiTextureProgram,
+						objFile: element.objFile,
+						textureColor: element.textureColor,
+						textureNormal: element.textureNormal,
+						textureRoughness: element.textureRoughness,
 						translation: element.translation,
 						rotation: element.rotation,
 						scale: element.scale,
@@ -218,9 +249,9 @@ export class SceneGraph {
 							: [0, 0, 0, 1],
 					});
 					await gameObject.prepare();
-	
+
 					group.children.push(gameObject);
-	
+
 					this.allObjects.push(gameObject);
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
@@ -245,9 +276,9 @@ export class SceneGraph {
 							: [0, 0, 0, 1],
 					});
 					await gameObject.prepare();
-	
+
 					group.children.push(gameObject);
-	
+
 					this.allObjects.push(gameObject);
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
@@ -272,9 +303,9 @@ export class SceneGraph {
 							: [0, 0, 0, 1],
 					});
 					await gameObject.prepare();
-	
+
 					group.children.push(gameObject);
-	
+
 					this.allObjects.push(gameObject);
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
@@ -307,6 +338,36 @@ export class SceneGraph {
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
+				} else if (element.program === "multiTextureProgram") {
+					let gameObject = new MultiTextureObject({
+						program: multiTextureProgram,
+						objFile: element.objFile,
+						textureColor: element.textureColor,
+						textureNormal: element.textureNormal,
+						textureRoughness: element.textureRoughness,
+						translation: element.translation,
+						rotation: element.rotation,
+						scale: element.scale,
+						faceCulling: element.faceCulling,
+						transparent: element.transparent,
+						id: element.id,
+						name: element.name,
+						pickable: element.pickable,
+						diffuseMaterial: element.diffuseMaterial
+							? element.diffuseMaterial
+							: [0, 0, 0, 1],
+						specularMaterial: element.specularMaterial
+							? element.specularMaterial
+							: [0, 0, 0, 1],
+					});
+					await gameObject.prepare();
+
+					group.children.push(gameObject);
+					
+					this.allObjects.push(gameObject);
+					if (gameObject.pickable) {
+						this.pickableObjects.push(gameObject);
+					}
 				} else if (element.program === "videoProgram") {
 					let gameObject = new VideoObject({
 						program: videoProgram,
@@ -330,7 +391,7 @@ export class SceneGraph {
 					await gameObject.prepare();
 
 					group.children.push(gameObject);
-					
+
 					this.allObjects.push(gameObject);
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);

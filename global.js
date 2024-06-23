@@ -24,7 +24,7 @@ export class Global {
 	static fogFar = 100;
 	static pointLightPosition1 = [-4.5, 1.5, -15];
 	static pointLightColor1 = [1, 0.8, 0.5, 1];
-	static pointLightPosition2 = [0, 1, -15];
+	static pointLightPosition2 = [0, 0, -16];
 	static pointLightColor2 = [0.5, 0.8, 1.0, 1];
 
 	// Provisorische Liste an opaken Objekten

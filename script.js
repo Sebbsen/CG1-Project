@@ -9,6 +9,7 @@ import { createPrograms, defaultProgram, textureProgram, videoProgram } from "./
 import { GameManager } from "./gameManager.js";
 import { TextureObject } from "./objects/textureObject.js";
 import { VideoObject } from "./objects/videoObject.js";
+import { MultiTextureObject } from "./objects/multiTextureObject.js";
 
 ("use strict");
 
