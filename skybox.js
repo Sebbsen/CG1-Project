@@ -31,6 +31,7 @@ export async function createNewSkybox(gl, images) {
         image.src = url;
         image.onload = () => {
             gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
             gl.texImage2D(target, level, internalFormat, format, type, image);
             gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
         };

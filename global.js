@@ -16,14 +16,15 @@ export class Global {
 
 	// Uniform-Daten
 	static sunPosition = [0, 10, 0];
-	static sunDirection = [1, 1, 0];
-	static ambientLightColor = [0, 0.1, 0.2, 1];
+	static sunDirection = [-0.6, 1, -1];
+	// static ambientLightColor = [0.3, 0.5, 0.6, 1];
+	static ambientLightColor = [0.2, 0.2, 0.2, 1];
 	static fogColor = [0.5, 0.5, 0.5, 1.0];
-	static fogNear = 1;
-	static fogFar = 20;
-	static pointLightPosition1 = [0, 1.5, 0];
+	static fogNear = 10;
+	static fogFar = 100;
+	static pointLightPosition1 = [-4.5, 1.5, -15];
 	static pointLightColor1 = [1, 0.8, 0.5, 1];
-	static pointLightPosition2 = [-5, 0.5, -5];
+	static pointLightPosition2 = [0, 1, -15];
 	static pointLightColor2 = [0.5, 0.8, 1.0, 1];
 
 	// Provisorische Liste an opaken Objekten

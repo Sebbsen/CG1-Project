@@ -47,23 +47,24 @@ async function init() {
 
 	let sceneGraph = new SceneGraph();
 	// await sceneGraph.init("./sceneGraphSolarSystemDemo.json");
-	await sceneGraph.init("./sceneGraph.json");
+	// await sceneGraph.init("./sceneGraph.json");
+	await sceneGraph.init("./sceneGraphDemoSzene.json");
 	console.log(sceneGraph);
 
 	const pickableObjects = sceneGraph.pickableObjects;
 
+	// Init Object Picker
 	const objectPicker = new ObjectPicker(gl, canvas, pickableObjects);
 
-	// Init Object Picker
 
 	// define skybox images
 	const skybox = await createNewSkybox(gl, {
-		negx: "assets/skybox/nx.png",
-		negy: "assets/skybox/ny.png",
-		negz: "assets/skybox/nz.png",
-		posx: "assets/skybox/px.png",
-		posy: "assets/skybox/py.png",
-		posz: "assets/skybox/pz.png",
+		negx: "assets/skybox/meadow-high-res/nx.png",
+		negy: "assets/skybox/meadow-high-res/ny.png",
+		negz: "assets/skybox/meadow-high-res/nz.png",
+		posx: "assets/skybox/meadow-high-res/px.png",
+		posy: "assets/skybox/meadow-high-res/py.png",
+		posz: "assets/skybox/meadow-high-res/pz.png",
 	});
 
 	Global.skybox = skybox;
@@ -72,14 +73,6 @@ async function init() {
 
 	const solarSystem = sceneGraph.allGroups.find((group) => group.name === "Sonnensystem");
 	const earthGroup = sceneGraph.allGroups.find((group) => group.name === "Erdgruppe");
-
-	const textureObject = new TextureObject({name: "Textur", program: textureProgram, id: 98, objFile: "./assets/models/cube-singlesided.obj", texture: "crate"});
-	await textureObject.prepare();
-
-	const videoObject = new VideoObject({name: "Video", program: videoProgram, id: 99, objFile: "./assets/models/cube-singlesided.obj", video: "paint"});
-	await videoObject.prepare();
-	videoObject.applyScale(0.9, 0.5, 0.9);
-	videoObject.translate(-1,0,-6);
 
 	async function loop(now) {
 		// TODO: replace mat4 with own mat implementation
@@ -94,10 +87,6 @@ async function init() {
 
 		// Then draw the game objects
 		gl.depthFunc(gl.LESS); // Restore the depth function
-
-		// Textured object
-		textureObject.draw();
-		videoObject.draw();
 
 		// KONTINUIERLICHE ANIMATIONEN
 		if (solarSystem) {
