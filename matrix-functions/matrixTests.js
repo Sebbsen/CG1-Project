@@ -394,10 +394,11 @@ import {lookAt} from "./matFunctions.js"
 let eye = new Float32Array([1,2,3])
 let look = new Float32Array([4,5,6])
 let up = new Float32Array([7,8,9])
+let viewMatrix = new Float32Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
 console.log("Testing lookAt() with eye "+eye+" look "+look+" up "+up)
-if (lookAt(eye,look,up) == null) {
+if (lookAt(viewMatrix, eye,look,up) == null) {
     console.log("Test unsuccessful")
 } else {
     console.log("Test OK")
-    console.log("Function result: "+lookAt(eye, look, up))
+    console.log("Function result: "+lookAt(viewMatrix, eye, look, up))
 }

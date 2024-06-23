@@ -390,11 +390,11 @@ export function vecScalar(v1, v2) {
         console.error("Vectors are not of equal dimensions")
         return null
     }
-    let result = new Float32Array(v1.length)
+    let sum = 0
     for (var i=0; i<v1.length; i++) {
-        result[i] = v1[i] * v2[i]
+        sum += v1[i] * v2[i]
     }
-    return result
+    return sum
 }
 
 /*Cross product of 2 vectors of dim=3*/
@@ -414,17 +414,29 @@ export function vectorCross(v1, v2) {
 }
 
 /*Create lookAt Matrix*/
-export function lookAt(eye, look, up) {
+export function lookAt(out, eye, look, up) {
     let n = vecNormalize(vecSubtract(eye, look))
     let u = vecNormalize(vectorCross(up, n));
     let v = vecNormalize(vectorCross(n, u));
     let lookAtMatrix = identity(4);
-    lookAtMatrix =
-        [u[0], v[0], n[0], 0,
-        u[1], v[1], n[1], 0,
-        u[2], v[2], n[2], 0,
-        vecScalar(vecMultiply(u, -1), eye), vecScalar(vecMultiply(v, -1), eye), vecScalar(vecMultiply(n, -1), eye), 1
-        ];
-    
-    return lookAtMatrix;
+    out[0] = u[0];
+    out[1] = v[0];
+    out[2] = n[0];
+    out[3] = 0;
+
+    out[4] = u[1];
+    out[5] = v[1];
+    out[6] = n[1];
+    out[7] = 0;
+
+    out[8] = u[2];
+    out[9] = v[2];
+    out[10] = n[2];
+    out[11] = 0;
+
+    out[12] = vecScalar(vecMultiply(u, -1), eye);
+    out[13] = vecScalar(vecMultiply(v, -1), eye);
+    out[14] = vecScalar(vecMultiply(n, -1), eye);
+    out[15] = 1;
+    return out;
 }

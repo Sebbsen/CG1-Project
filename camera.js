@@ -6,6 +6,7 @@ export let cameraRotY = 0;
 export let speed = 0.05;
 export let sensitivity = 0.001;
 export let keys = {};
+import {lookAt} from "./matrix-functions/matFunctions.js"
 
 export function initCamera(canvas) {
     window.addEventListener('keydown', (event) => {
@@ -80,5 +81,5 @@ export function updateCamera(viewMatrix, mat4) {
 
     // Update the view matrix
     // TODO: replace with own mat implementation 
-    mat4.lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [centerX, centerY, centerZ], [0, 1, 0]);
+    lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [centerX, centerY, centerZ], [0, 1, 0]);
 }
