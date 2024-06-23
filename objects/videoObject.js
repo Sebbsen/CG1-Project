@@ -90,7 +90,7 @@ export class VideoObject extends GameObject {
 			0,
 			gl.RGBA,
 			gl.UNSIGNED_BYTE,
-			new Uint8Array([0, 0, 255, 255])
+			new Uint8Array([0, 0, 0, 255])
 		);
 
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
