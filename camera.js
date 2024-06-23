@@ -64,7 +64,7 @@ export function updateCamera(viewMatrix, mat4) {
     if (keys[' ']) {
         cameraY += speed;
     }
-    if (keys['f'] || keys['Shift']) {
+    if (keys['f']) {
         cameraY -= speed;
     }
 
