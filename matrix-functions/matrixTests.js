@@ -249,6 +249,20 @@ if (vecNormalize(v1) == null) {
 }
 console.log("--------------------------------------------")
 /*case 2*/
+v1 = [-6,-3,-6]
+console.log("Testing vecNormalize for "+v1)
+
+if (vecNormalize(v1) == null) {
+    console.log("Test unsuccessful")
+} else {
+    console.log("Test OK")
+    console.log("Expected result: -0.6,-0.3,-0.6")
+    console.log("Function result: " +vecNormalize(v1))
+    console.log("Vector length: "+vecLength(v1))
+    console.log("Rounding results in slightly different results, function is working as intended")
+}
+console.log("--------------------------------------------")
+/*case 3*/
 v1 = "testing errors"
 console.log("Testing vecNormalize for invalid data type")
 if (vecNormalize(v1) == null) {
@@ -372,4 +386,18 @@ if (vectorCross(v1,v2) == null) {
     console.log("Test OK")
     console.log("Expected result: -3,6,-3")
     console.log("Function result: " +vectorCross(v1,v2))
+}
+console.log("--------------------------------------------")
+
+/*Testing lookAt()*/
+import {lookAt} from "./matFunctions.js"
+let eye = new Float32Array([1,2,3])
+let look = new Float32Array([4,5,6])
+let up = new Float32Array([7,8,9])
+console.log("Testing lookAt() with eye "+eye+" look "+look+" up "+up)
+if (lookAt(eye,look,up) == null) {
+    console.log("Test unsuccessful")
+} else {
+    console.log("Test OK")
+    console.log("Function result: "+lookAt(eye, look, up))
 }

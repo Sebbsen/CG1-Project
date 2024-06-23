@@ -342,21 +342,23 @@ export function vecSubtract(v1, v2) {
 
 /*Normalize vector*/
 export function vecNormalize(v) {
-    if (Array.isArray(v) == false) {
-        console.error("vecNormalize expected an array, but was given "+typeof(v))
+    if (v.constructor == Float32Array) {
+        let result = new Float32Array(3)
+        let vLength = ((v[0]) ** 2 + (v[1]) ** 2 + (v[2]) ** 2) ** (1 / 2)
+        result[0] = v[0] / vLength
+        result[1] = v[1] / vLength
+        result[2] = v[2] / vLength
+        return result
+    } else {
+        console.error("vecNormalize was given incorrect data type")
         return null
     }
-    let result = new Float32Array(3)
-    let vLength = vecLength(v)
-    result[0] = v[0] / vLength
-    result[1] = v[1] / vLength
-    result[2] = v[2] / vLength
-    return vLength, result
+    
 }
 
 /*length of a vector*/
 export function vecLength(v) {
-    if (Array.isArray(v) == false) {
+    if (ArrayBuffer.isView(v) == false) {
         console.error("vecLength expected an array, but was given "+typeof(v))
     }
     return (v[0] ** 2 + v[1] ** 2 + v[2] ** 2) ** (1 / 2)
@@ -365,7 +367,7 @@ export function vecLength(v) {
 
 /*Multiply vector and scalar*/
 export function vecMultiply(vector, factor) {
-    if (Array.isArray(vector) == false) {
+    if (vector.constructor == !Float32Array) {
         console.error("vecMultiply expected an array, but was given "+typeof(v))
         return null
     } else if (typeof(factor) != "number")  {
@@ -381,7 +383,7 @@ export function vecMultiply(vector, factor) {
 
 /*Scalar product of 2 vectors*/
 export function vecScalar(v1, v2) {
-    if (Array.isArray(v1) == false || Array.isArray(v2) == false) {
+    if (v1.constructor == !Float32Array || v2.constructor == !Float32Array) {
         console.error("Invalid datatype, vecScalar expected two arrays but was given "+typeof(v1)+" and "+typeof(v2))
         return null
     } else if (v1.length != v2.length){
@@ -400,8 +402,8 @@ export function vectorCross(v1, v2) {
     if (v1.length != v2.length){
         console.error("Vectors are not of equal dimensions")
         return null
-    } else if (Array.isArray(v1) == false || Array.isArray(v2) == false) {
-        console.error("Invalid datatype, vecScalar expected two arrays but was given "+typeof(v1)+" and "+typeof(v2))
+    } else if (v1.constructor == !Float32Array || v2.constructor == !Float32Array) {
+        console.error("Invalid datatype, vectorCross expected two arrays but was given "+typeof(v1)+" and "+typeof(v2))
         return null
     }
     let result = new Float32Array(3)
@@ -413,7 +415,7 @@ export function vectorCross(v1, v2) {
 
 /*Create lookAt Matrix*/
 export function lookAt(eye, look, up) {
-    let n = vecNormalize(vecSubtract(eye, look));
+    let n = vecNormalize(vecSubtract(eye, look))
     let u = vecNormalize(vectorCross(up, n));
     let v = vecNormalize(vectorCross(n, u));
     let lookAtMatrix = identity(4);
@@ -421,7 +423,8 @@ export function lookAt(eye, look, up) {
         [u[0], v[0], n[0], 0,
         u[1], v[1], n[1], 0,
         u[2], v[2], n[2], 0,
-        vecScalar(vecMultiply(-1, u), eye), vecScalar(vecMultiply(-1, v), eye), vecScalar(vecMultiply(-1, n), eye), 1
+        vecScalar(vecMultiply(u, -1), eye), vecScalar(vecMultiply(v, -1), eye), vecScalar(vecMultiply(n, -1), eye), 1
         ];
+    
     return lookAtMatrix;
 }
