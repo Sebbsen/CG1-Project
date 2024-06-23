@@ -67,11 +67,11 @@ export class Mat4 {
 
 		for (var i = 0; i < 4; i++) {
 			for (var j = 0; j < 4; j++) {
-				result[i * 4 + j] =
-					matrix1[i * 4] * matrix2[j] +
-					matrix1[i * 4 + 1] * matrix2[j + 4] +
-					matrix1[i * 4 + 2] * matrix2[j + 8] +
-					matrix1[i * 4 + 3] * matrix2[j + 12];
+				result[i + j * 4] =
+					matrix1[i] * matrix2[j * 4 + 0] +
+					matrix1[i + 4] * matrix2[j * 4 + 1] +
+					matrix1[i + 8] * matrix2[j * 4 + 2] +
+					matrix1[i + 12] * matrix2[j * 4 + 3];
 			}
 		}
 
