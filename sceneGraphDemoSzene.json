@@ -80,7 +80,7 @@
 						{
 							"type": "object",
 							"name": "Password",
-							"id": 51,
+							"id": 55,
 							"program": "multiTextureProgram",
 							"objFile": "./assets/models/note.obj",
 							"textureColor": "note",
