@@ -47,6 +47,7 @@ export class VideoObject extends GameObject {
 		this.timeupdate = false;
 	}
 
+	// Bereite Buffer vor
 	prepareBuffer() {
 		super.prepareBuffer();
 
@@ -74,8 +75,6 @@ export class VideoObject extends GameObject {
 			true
 		);
 
-		//videoSrc.play();
-
 		let video = gl.createTexture();
 		this.videoTexture = video;
 		gl.activeTexture(gl.TEXTURE0 + this.id);
@@ -97,23 +96,9 @@ export class VideoObject extends GameObject {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-
-		// gl.texParameteri(
-		// 	gl.TEXTURE_2D,
-		// 	gl.TEXTURE_MIN_FILTER,
-		// 	gl.LINEAR_MIPMAP_LINEAR
-		// );
-		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		// gl.texImage2D(
-		// 	gl.TEXTURE_2D,
-		// 	0,
-		// 	gl.RGBA,
-		// 	gl.RGBA,
-		// 	gl.UNSIGNED_BYTE,
-		// 	videoSrc
-		// );
 	}
 
+	// Lade Attribute
 	loadAttributes() {
 		super.loadAttributes();
 
@@ -136,12 +121,14 @@ export class VideoObject extends GameObject {
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
 
+	// Lade Uniforms
 	loadUniforms() {
 		super.loadUniforms();
 
 		gl.uniform1i(gl.getUniformLocation(this.program, "texture"), this.id);
 	}
 
+	// Zeichne das Objekt
 	draw() {
 		if (this.disabled) return;
 
@@ -168,12 +155,14 @@ export class VideoObject extends GameObject {
 		gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
 	}
 
+	// Check, ob das Video geladen ist
 	checkReady() {
 		if (this.playing && this.timeupdate) {
 			this.copyVideo = true;
 		}
 	}
 
+	// Update der Videotextur
 	updateTexture() {
 		gl.bindTexture(gl.TEXTURE_2D, this.videoTexture);
 		gl.texImage2D(

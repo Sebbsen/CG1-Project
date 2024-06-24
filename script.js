@@ -1,15 +1,10 @@
 import { Global } from "./global.js";
-import { createProgram } from "./program.js";
-import { GameObject } from "./gameObject.js";
 import { ObjectPicker } from "./objectPicker.js";
 import { createNewSkybox, drawNewSkybox } from "./skybox.js";
-import { initCamera, sensitivity, updateCamera } from "./camera.js";
+import { initCamera, updateCamera } from "./camera.js";
 import { SceneGraph } from "./sceneGraph.js";
-import { createPrograms, defaultProgram, textureProgram, videoProgram } from "./shaderPrograms.js";
+import { createPrograms } from "./shaderPrograms.js";
 import { GameManager } from "./gameManager.js";
-import { TextureObject } from "./objects/textureObject.js";
-import { VideoObject } from "./objects/videoObject.js";
-import { MultiTextureObject } from "./objects/multiTextureObject.js";
 
 ("use strict");
 
@@ -75,7 +70,6 @@ async function init() {
 	const earthGroup = sceneGraph.allGroups.find((group) => group.name === "Erdgruppe");
 
 	async function loop(now) {
-		// TODO: replace mat4 with own mat implementation
 		updateCamera(Global.viewMatrix);
 
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -88,7 +82,9 @@ async function init() {
 		// Then draw the game objects
 		gl.depthFunc(gl.LESS); // Restore the depth function
 
-		// KONTINUIERLICHE ANIMATIONEN
+
+
+		// KONTINUIERLICHE ANIMATIONEN (nur Sonnensystemszene)
 		if (solarSystem) {
 			const startRotY = solarSystem.rotation;
 			const endRotY = [startRotY[0], startRotY[1] - 10, startRotY[2]];

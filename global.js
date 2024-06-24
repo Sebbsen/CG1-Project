@@ -33,16 +33,19 @@ export class Global {
 	// Provisorische Liste an transparenten Objekten
 	static transparentObjects = [];
 
+	// Initialisiere Matrizen
 	static init() {
 		this.initViewMatrix();
 		this.initProjectionMatrix();
 	}
 
+	// Initialisiere ViewMatrix
 	static initViewMatrix() {
 		this.viewMatrix = identity(4);
 		lookAt(this.viewMatrix, this.cameraPosition, this.cameraLookPosition, this.cameraUpDirection);
 	}
 
+	// Initialisiere Projektionsmatrix
 	static initProjectionMatrix() {
 		this.projectionMatrix = perspective(this.yFOV, this.aspectRatio, this.near, this.far);
 	}

@@ -59,6 +59,7 @@ export class GameObject {
 		this.worldMatrix = identity(4);
 	}
 
+	// Zeichne das Objekt
 	draw() {
 		if (this.disabled) return;
 
@@ -76,6 +77,7 @@ export class GameObject {
 		gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
 	}
 
+	// Zeichne das Objekt mit Farb-ID
 	drawPicking() {
 		if (this.disabled) return;
 
@@ -93,12 +95,13 @@ export class GameObject {
 		gl.uniform1i(gl.getUniformLocation(this.program, "uPicking"), 0);
 	}
 
+	// Bereite das Objekt vor
 	async prepare() {
 		await this.loadModelData(this.objFile);
 		this.prepareBuffer();
 	}
 
-	// Funktion zum animieren des Objekts
+	// Animation der Translation
 	animateTranslation(from, to, duration) {
 		const startTime = performance.now(); // Startzeit speichern
 
@@ -126,6 +129,7 @@ export class GameObject {
 		requestAnimationFrame(animate);
 	}
 
+	// Animation der Rotation
 	animateRotation(from, to, duration) {
 		const startTime = performance.now(); // Startzeit speichern
 
@@ -153,6 +157,7 @@ export class GameObject {
 		requestAnimationFrame(animate);
 	}
 
+	// Animation der Skalierung
 	animateScale(from, to, duration) {
 		const startTime = performance.now(); // Startzeit speichern
 
@@ -180,6 +185,7 @@ export class GameObject {
 		requestAnimationFrame(animate);
 	}
 
+	// kontinuierliche Animation der Translation
 	animateTranslationPerFrame(from, to) {
 		// Differenz berechnen
 		const deltaX = to[0] - from[0];
@@ -193,6 +199,7 @@ export class GameObject {
 		this.translation = [currentX, currentY, currentZ]; // setzen der neuen Translation
 	}
 
+	// kontinuierliche Animation der Rotation
 	animateRotationPerFrame(from, to) {
 		// Differenz berechnen
 		const deltaX = to[0] - from[0];
@@ -206,6 +213,7 @@ export class GameObject {
 		this.rotation = [currentX, currentY, currentZ]; // setzen der neuen Rotation
 	}
 
+	// kontinuierliche Animation der Skalierung
 	animateScalePerFrame(from, to) {
 		// Differenz berechnen
 		const deltaX = to[0] - from[0];
