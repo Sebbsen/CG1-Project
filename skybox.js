@@ -2,11 +2,13 @@ import { skyboxProgram } from "./shaderPrograms.js";
 import { Global } from "./global.js";
 import { identity, clone, multiplyMatrices } from "./matrix-functions/matFunctions.js"
 
+// Funktion zum Erstellen einer neuen Skybox
 export async function createNewSkybox(gl, images) {
 
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
 
+    // Definieren der Seiten der Skybox mit den entsprechenden Bild-URLs
     const faceInfos = [
         { target: gl.TEXTURE_CUBE_MAP_POSITIVE_X, url: images.posx },
         { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X, url: images.negx },
@@ -16,6 +18,7 @@ export async function createNewSkybox(gl, images) {
         { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, url: images.negz },
     ];
 
+    // Definieren der Seiten der Skybox mit den entsprechenden Bild-URLs
     faceInfos.forEach((faceInfo) => {
         const { target, url } = faceInfo;
         const level = 0;
@@ -25,7 +28,7 @@ export async function createNewSkybox(gl, images) {
         const format = gl.RGBA;
         const type = gl.UNSIGNED_BYTE;
 
-        // Setup placeholder texture
+        // Platzhalter-Textur einstellen
         gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
 
         const image = new Image();
@@ -38,16 +41,18 @@ export async function createNewSkybox(gl, images) {
         };
     });
 
+    // Textur-Parameter einstellen
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     
-    // Check for WebGL 2.0 for TEXTURE_WRAP_R
+    // Überprüfen, ob WebGL 2.0 verwendet wird für TEXTURE_WRAP_R
     if (gl instanceof WebGL2RenderingContext) {
         gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE);
     }
 
+    // Erstellen und Binden eines Positionen-Buffers
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     const positions = new Float32Array([
@@ -62,6 +67,7 @@ export async function createNewSkybox(gl, images) {
     ]);
     gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
 
+    // Erstellen und Binden eines Index-Buffers
     const indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     const indices = new Uint16Array([
@@ -80,36 +86,42 @@ export async function createNewSkybox(gl, images) {
     ]);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
+    // Rückgabe des erstellten Skybox-Objekts
     return { program: skyboxProgram, positionBuffer, indexBuffer, texture };
 }
 
+// Funktion zum Zeichnen der Skybox
 export function drawNewSkybox(gl, skybox) {
     gl.useProgram(skybox.program);
 
+    // Attribute und Uniform-Standorte abrufen
     const positionLocation = gl.getAttribLocation(skybox.program, "a_position");
     const viewProjectionLocation = gl.getUniformLocation(skybox.program, "u_viewProjection");
     const textureLocation = gl.getUniformLocation(skybox.program, "u_texture");
 
+    // Positionen-Buffer binden und Attribute einstellen
     gl.bindBuffer(gl.ARRAY_BUFFER, skybox.positionBuffer);
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
 
+    // Index-Buffer binden
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, skybox.indexBuffer);
 
-    // Remove translation from the view matrix
+    // Translation aus der View-Matrix entfernen (nur Rotation wird beachtet)
     const viewMatrix = clone(Global.viewMatrix);
 	viewMatrix[12] = 0;
 	viewMatrix[13] = 0;
 	viewMatrix[14] = 0;
 	
-    let viewProjectionMatrix = identity(4);
-    //mat4.multiply(viewProjectionMatrix, Global.projectionMatrix, viewMatrix);
-    viewProjectionMatrix = multiplyMatrices(Global.projectionMatrix, viewMatrix);
+    // View-Projection-Matrix berechnen
+    let viewProjectionMatrix = multiplyMatrices(Global.projectionMatrix, viewMatrix);
 
+    // View-Projection-Matrix und Textur an die Shader übergeben
     gl.uniformMatrix4fv(viewProjectionLocation, false, viewProjectionMatrix);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, skybox.texture);
     gl.uniform1i(textureLocation, 0);
 
+    // Skybox zeichnen
     gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
 }

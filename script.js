@@ -48,11 +48,11 @@ async function init() {
 
 	const pickableObjects = sceneGraph.pickableObjects;
 
-	// Init Object Picker
+	// Initialisiert den ObjectPicker
 	const objectPicker = new ObjectPicker(gl, canvas, pickableObjects);
 
 
-	// define skybox images
+	// Definiert die Skybox
 	const skybox = await createNewSkybox(gl, {
 		negx: "assets/skybox/new/nx.png",
 		negy: "assets/skybox/new/ny.png",
@@ -70,17 +70,18 @@ async function init() {
 	const earthGroup = sceneGraph.allGroups.find((group) => group.name === "Erdgruppe");
 
 	async function loop(now) {
+		// Kamera Position Update
 		updateCamera(Global.viewMatrix);
 
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		// Draw the skybox first
-		gl.depthFunc(gl.LEQUAL); // Change the depth function to LEQUAL for skybox
+		// Zeichen die Skybox als erstes, damit alles andere "drüber" liegen kann
+		gl.depthFunc(gl.LEQUAL); // Ändere depthFunc für die Skybox auf LEQUAL
 		drawNewSkybox(gl, skybox);
-		gl.clear(gl.DEPTH_BUFFER_BIT); // Clear the depth buffer after drawing the skybox
+		gl.clear(gl.DEPTH_BUFFER_BIT); // Depth Buffer wieder leeren
 
-		// Then draw the game objects
-		gl.depthFunc(gl.LESS); // Restore the depth function
+		// Andere Objekte der 3D Szene werden "drüber" gezeichnet
+		gl.depthFunc(gl.LESS); // depthFunc wieder auf less zurückstellen
 
 
 
@@ -145,7 +146,8 @@ async function init() {
 		}
 	}, 4000)
 
-	//Pick Object
+	// Ffügt einen Event-Listener für Klicks auf das Canvas hinzu.
+	// ObjectPicker ermittelt an angeklickte Objekt und leitet es an den gameManager weiter
 	canvas.addEventListener("click", (event) => {
 		const x = canvas.width / 2;
 		const y = canvas.height / 2;

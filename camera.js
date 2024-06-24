@@ -8,6 +8,7 @@ export let sensitivity = 0.001;
 export let keys = {};
 import {lookAt} from "./matrix-functions/matFunctions.js"
 
+// initialisiert die Kamera mit den event listener 
 export function initCamera(canvas) {
     window.addEventListener('keydown', (event) => {
         keys[event.key] = true;
@@ -21,6 +22,7 @@ export function initCamera(canvas) {
         canvas.requestPointerLock();
     });
 
+    // blendet die Maus aus und locked die maus im canvas
     document.addEventListener('pointerlockchange', () => {
         if (document.pointerLockElement === canvas) {
             console.log('Pointer locked');
@@ -30,8 +32,9 @@ export function initCamera(canvas) {
             document.removeEventListener('mousemove', updateCameraRotation);
         }
     });
-}
+}   
 
+// Aktualisiert die Kamerarotation basierend auf der Mausbewegung
 function updateCameraRotation(event) {
     let deltaX = event.movementX;
     let deltaY = event.movementY;
@@ -39,10 +42,11 @@ function updateCameraRotation(event) {
     cameraRotX -= deltaX * sensitivity;
     cameraRotY -= deltaY * sensitivity;
 
-    // Clamp the vertical rotation to prevent flipping
+    // Clamping
     cameraRotY = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotY));
 }
 
+// Aktualisiert die Kameraposition und -richtung basierend auf Benutzereingaben und aktualisiert die viewMatrix entsprechend
 export function updateCamera(viewMatrix) {
     if (keys['w']) {
         cameraX += speed * Math.sin(cameraRotX);
@@ -68,7 +72,7 @@ export function updateCamera(viewMatrix) {
         cameraY -= speed;
     }
 
-    // Calculate the direction the camera is looking
+    // Berechnet die Blickrichtung der Kamera
     let cameraDirection = [
         Math.sin(cameraRotX) * Math.cos(cameraRotY),
         Math.sin(cameraRotY),
@@ -79,7 +83,6 @@ export function updateCamera(viewMatrix) {
     let centerY = cameraY + cameraDirection[1];
     let centerZ = cameraZ + cameraDirection[2];
 
-    // Update the view matrix
-    // TODO: replace with own mat implementation 
+    // Update viewMatrix
     lookAt(viewMatrix, [cameraX, cameraY, cameraZ], [centerX, centerY, centerZ], [0, 1, 0]);
 }
