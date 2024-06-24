@@ -4,8 +4,8 @@
 		{
 			"type": "group",
 			"name": "Hauptgruppe",
-			"translation": [0, -10, -15],
-			"rotation": [0, 0, 0],
+			"translation": [0, -10, -2],
+			"rotation": [0, 180, 0],
 			"scale": [1, 1, 1],
 			"children": [
 				{

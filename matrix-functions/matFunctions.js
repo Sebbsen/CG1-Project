@@ -90,7 +90,7 @@ export function clone(matrix) {
 
 /*Create a translation matrix out of a matrix and a vector*/
 export function translateMatrix(matrix, vector) {
-    if (matrix.length !== 16 || vector.length !== 4) {
+    if (matrix.length !== 16 || vector.length !== 3) {
         console.error("Invalid matrix or vector dimensions.");
         return null;
     }
@@ -278,9 +278,10 @@ export function rotateX(matrix, angle) {
     } else if (typeof(angle) != "number") {
         console.error("Invalid datatype for angle "+typeof(angle)+". 'Angle' must be of datatype 'number'.")
         return null;
-    } else if (Array.isArray(matrix) == false) {
+    } else if (!matrix instanceof Float32Array) {
         console.error("Invalid datatype rotateX() expected an array, but was given "+typeof(matrix))
     }
+    angle = angle * Math.PI / 180;
     const rotateMat = identity(4)
     const c = Math.cos(angle)
     const s = Math.sin(angle)
@@ -299,9 +300,10 @@ export function rotateY(matrix, angle) {
     } else if (typeof(angle) != "number") {
         console.error("Invalid datatype for angle "+typeof(angle)+". 'Angle' must be of datatype 'number'.")
         return null;
-    } else if (Array.isArray(matrix) == false) {
+    } else if (!matrix instanceof Float32Array) {
         console.error("Invalid datatype rotateY() expected an array, but was given "+typeof(matrix))
     }
+    angle = angle * Math.PI / 180;
     const rotateMat = identity(4)
     const c = Math.cos(angle)
     const s = Math.sin(angle)
@@ -318,11 +320,12 @@ export function rotateZ(matrix, angle) {
         console.error("Invalid matrix dimension.");
         return null;
     } else if (typeof(angle) != "number") {
-        console.error("Invalid datatype for angle "+typeof(angle)+". 'Angle' must be of datatype 'number'.")
+        console.error("Invalid datatype for angle "+typeof(angle)+". 'Angle' must be of datatype 'number'.");
         return null;
-    } else if (Array.isArray(matrix) == false) {
-        console.error("Invalid datatype rotateZ(...) expected an array, but was given "+typeof(matrix))
+    } else if (!matrix instanceof Float32Array) {
+        console.error("Invalid datatype rotateZ(...) expected an array, but was given "+typeof(matrix));
     }
+    angle = angle * Math.PI / 180;
     const rotateMat = identity(4)
     const c = Math.cos(angle)
     const s = Math.sin(angle)
@@ -338,7 +341,7 @@ export function scaleMatrix(matrix, scalar) {
     if (matrix.length !== 16) {
         console.error("Invalid matrix dimension.");
         return null;
-    } else if (Array.isArray(matrix) == false) {
+    } else if (!matrix instanceof Float32Array) {
         console.error("Invalid datatype scaleMatrix(...) expected an array, but was given "+typeof(matrix))
     }
     let scaleMat = identity(4);
@@ -460,4 +463,19 @@ export function lookAt(out, eye, look, up) {
     out[14] = vecScalar(vecMultiply(n, -1), eye);
     out[15] = 1;
     return out;
+}
+
+/*Create perspective Matrix*/
+export function perspective(fovy, aspect, near, far) {
+	let t = Math.tan(fovy / 2) * near;
+	let r = aspect * t;
+	let m = new Float32Array(
+		[
+			[near / r, 0, 0, 0],
+			[0, near / t, 0, 0],
+			[0, 0, (far + near) / (near - far), -1],
+			[0, 0, (2 * far * near) / (near - far), 0],
+		].flat()
+	);
+	return m;
 }

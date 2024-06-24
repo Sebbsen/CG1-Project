@@ -10,11 +10,11 @@ import {
 	videoProgram,
 } from "./shaderPrograms.js";
 import { gl } from "./script.js";
-import { Mat4 } from "./mat4.js";
 import { Transformation } from "./transformation.js";
 import { TextureObject } from "./objects/textureObject.js";
 import { VideoObject } from "./objects/videoObject.js";
 import { MultiTextureObject } from "./objects/multiTextureObject.js";
+import { identity, multiplyMatrices } from "./matrix-functions/matFunctions.js";
 
 export class SceneGraph {
 	constructor() {
@@ -61,6 +61,7 @@ export class SceneGraph {
 					this.data.push(gameObject);
 
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -88,6 +89,7 @@ export class SceneGraph {
 					this.data.push(gameObject);
 
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -115,6 +117,7 @@ export class SceneGraph {
 					this.data.push(gameObject);
 
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -141,7 +144,9 @@ export class SceneGraph {
 					await gameObject.prepare();
 
 					this.data.push(gameObject);
+
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -170,7 +175,9 @@ export class SceneGraph {
 					await gameObject.prepare();
 
 					this.data.push(gameObject);
+
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -197,7 +204,9 @@ export class SceneGraph {
 					await gameObject.prepare();
 
 					this.data.push(gameObject);
+
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -220,8 +229,6 @@ export class SceneGraph {
 				this.data.push(group);
 			}
 		});
-
-		return this;
 	}
 
 	async loadGroup(group, children) {
@@ -253,6 +260,7 @@ export class SceneGraph {
 					group.children.push(gameObject);
 
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -280,6 +288,7 @@ export class SceneGraph {
 					group.children.push(gameObject);
 
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -307,6 +316,7 @@ export class SceneGraph {
 					group.children.push(gameObject);
 
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -335,6 +345,7 @@ export class SceneGraph {
 					group.children.push(gameObject);
 
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -365,6 +376,7 @@ export class SceneGraph {
 					group.children.push(gameObject);
 					
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -393,6 +405,7 @@ export class SceneGraph {
 					group.children.push(gameObject);
 
 					this.allObjects.push(gameObject);
+
 					if (gameObject.pickable) {
 						this.pickableObjects.push(gameObject);
 					}
@@ -452,15 +465,11 @@ export class SceneGraph {
 				transformations.push(translation);
 
 				// Initialisiere die finale Transformationsmatrix als Identitätsmatrix.
-				let finalTransformation = new Float32Array(16);
-				Mat4.identity(finalTransformation);
+				let finalTransformation = identity(4);
 
 				// Multipliziere alle Matrizen des Pfades zu diesem Objekt.
 				transformations.forEach((transformation) => {
-					finalTransformation = Mat4.multiply(
-						transformation.matrix,
-						finalTransformation
-					);
+					finalTransformation = multiplyMatrices(transformation.matrix, finalTransformation);
 				});
 
 				// Setze die WorldMatrix des Objekts zur finalen Transformation.
@@ -619,15 +628,11 @@ export class SceneGraph {
 				transformations.reverse();
 
 				// Initialisiere die finale Transformationsmatrix als Identitätsmatrix.
-				let finalTransformation = new Float32Array(16);
-				Mat4.identity(finalTransformation);
+				let finalTransformation = identity(4);
 
 				// Multipliziere alle Matrizen des Pfades zu diesem Objekt.
 				transformations.forEach((transformation) => {
-					finalTransformation = Mat4.multiply(
-						transformation.matrix,
-						finalTransformation
-					);
+					finalTransformation = multiplyMatrices(transformation.matrix, finalTransformation);
 				});
 
 				// Setze die WorldMatrix des Objekts zur finalen Transformation.

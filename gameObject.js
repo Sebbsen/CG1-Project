@@ -1,7 +1,7 @@
 import { gl } from "./script.js";
-import { Mat4 } from "./mat4.js";
 import { Global } from "./global.js";
 import { deltaTime } from "./script.js";
+import { identity, rotateX, rotateY, rotateZ, scaleMatrix, translateMatrix } from "./matrix-functions/matFunctions.js";
 
 export class GameObject {
 	/**
@@ -56,8 +56,7 @@ export class GameObject {
 		this.viewMatrixUniformLocation;
 		this.projectionMatrixUniformLocation;
 
-		this.worldMatrix = new Float32Array(16);
-		Mat4.identity(this.worldMatrix);
+		this.worldMatrix = identity(4);
 	}
 
 	draw() {
@@ -221,53 +220,23 @@ export class GameObject {
 	}
 
 	translate(x, y, z) {
-		this.worldMatrix = Mat4.translate(this.worldMatrix, [x, y, z]);
+		this.worldMatrix = translateMatrix(this.worldMatrix, [x,y,z]);
 	}
 
 	applyScale(x, y, z) {
-		this.worldMatrix = Mat4.scale(this.worldMatrix, [x, y, z]);
+		this.worldMatrix = scaleMatrix(this.worldMatrix, [x,y,z]);
 	}
 
-	rotateX(degrees) {
-		this.worldMatrix = Mat4.rotateX(
-			this.worldMatrix,
-			degrees / (2 * Math.PI)
-		);
-
-		gl.useProgram(this.program);
-
-		gl.uniformMatrix4fv(
-			this.worldMatrixUniformLocation,
-			false,
-			this.worldMatrix
-		);
+	rotateX(angle) {
+		this.worldMatrix = rotateX(this.worldMatrix, angle);
 	}
 
-	rotateY(degrees) {
-		this.worldMatrix = Mat4.rotateY(this.worldMatrix, degrees / Math.PI);
-
-		gl.useProgram(this.program);
-
-		gl.uniformMatrix4fv(
-			this.worldMatrixUniformLocation,
-			false,
-			this.worldMatrix
-		);
+	rotateY(angle) {
+		this.worldMatrix = rotateY(this.worldMatrix, angle);
 	}
 
-	setRotationY(degrees) {
-		let identity = new Float32Array(16);
-		Mat4.identity(identity);
-
-		this.worldMatrix = Mat4.rotateY(identity, degrees);
-
-		gl.useProgram(this.program);
-
-		gl.uniformMatrix4fv(
-			this.worldMatrixUniformLocation,
-			false,
-			this.worldMatrix
-		);
+	setRotationY(angle) {
+		this.worldMatrix = rotateZ(this.worldMatrix, angle);
 	}
 
 	updateWorldMatrix(worldMatrix) {

@@ -68,8 +68,8 @@ void main() {
     // Point Lights
     vec3 point_light_direction_1 = normalize(pointLightPosition1 - fragPosition);
     float distance_1 = distance(fragPosition, pointLightPosition1);
-    // float attenuation_1 = quadratic(distance_1, 0.1, 0.0, 0.1);
-    float attenuation_1 = radius(distance_1, 3.0, 0.25);
+    float attenuation_1 = quadratic(distance_1, 0.5, 0.0, 0.001);
+    // float attenuation_1 = radius(distance_1, 3.0, 0.25);
     vec4 diffuse_point_light_1 = max(dot(point_light_direction_1, normal), 0.0) * attenuation_1 * pointLightColor1;
 
     vec3 point_light_direction_2 = normalize(pointLightPosition2 - fragPosition);

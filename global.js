@@ -1,4 +1,4 @@
-import { Mat4 } from "./mat4.js";
+import { identity, lookAt, perspective } from "./matrix-functions/matFunctions.js";
 
 export class Global {
 	// Kamera
@@ -16,15 +16,16 @@ export class Global {
 
 	// Uniform-Daten
 	static sunPosition = [0, 10, 0];
-	static sunDirection = [-0.6, 1, -1];
+	static sunDirection = [0.6, 1, 1];
 	// static ambientLightColor = [0.3, 0.5, 0.6, 1];
-	static ambientLightColor = [0.2, 0.2, 0.2, 1];
+	static ambientLightColor = [0.3, 0.3, 0.3, 1];
 	static fogColor = [0.5, 0.5, 0.5, 1.0];
 	static fogNear = 10;
 	static fogFar = 100;
-	static pointLightPosition1 = [-4.5, 1.5, -15];
-	static pointLightColor1 = [1, 0.8, 0.5, 1];
-	static pointLightPosition2 = [0, 0, -16];
+	static pointLightPosition1 = [4.5, 0, -2];
+	// static pointLightColor1 = [1, 0.8, 0.5, 1];
+	static pointLightColor1 = [1, 0.0, 0.0, 1];
+	static pointLightPosition2 = [0, 0, -2];
 	static pointLightColor2 = [0.5, 0.8, 1.0, 1];
 
 	// Provisorische Liste an opaken Objekten
@@ -38,86 +39,12 @@ export class Global {
 	}
 
 	static initViewMatrix() {
-		this.viewMatrix = this.lookAt(
-			new Float32Array(this.cameraPosition),
-			new Float32Array(this.cameraLookPosition),
-			new Float32Array(this.cameraUpDirection)
-		);
+		this.viewMatrix = identity(4);
+		lookAt(this.viewMatrix, this.cameraPosition, this.cameraLookPosition, this.cameraUpDirection);
 	}
 
 	static initProjectionMatrix() {
-		this.projectionMatrix = this.perspective(
-			this.yFOV,
-			this.aspectRatio,
-			this.near,
-			this.far
-		);
-	}
-
-	static lookAt(eye, look, up) {
-		if (eye === look) {
-			throw new Error("eye and look must not be equal");
-		}
-
-		let n = Mat4.subtractVectors(eye, look);
-		let u = Mat4.crossProduct(up, n);
-		let v = Mat4.crossProduct(n, u);
-
-		n = Mat4.multiplyVectorByScalar(n, 1.0 / Mat4.vectorLength(n));
-		u = Mat4.multiplyVectorByScalar(u, 1.0 / Mat4.vectorLength(u));
-		v = Mat4.multiplyVectorByScalar(v, 1.0 / Mat4.vectorLength(v));
-
-		let nN = Mat4.multiplyVectorByScalar(n, -1.0);
-		let uN = Mat4.multiplyVectorByScalar(u, -1.0);
-		let vN = Mat4.multiplyVectorByScalar(v, -1.0);
-
-		let tX = Mat4.dotProduct(uN, eye);
-		let tY = Mat4.dotProduct(vN, eye);
-		let tZ = Mat4.dotProduct(nN, eye);
-
-		let mRT = new Float32Array(
-			[
-				[u[0], v[0], n[0], 0],
-				[u[1], v[1], n[1], 0],
-				[u[2], v[2], n[2], 0],
-				[tX, tY, tZ, 1],
-			].flat()
-		);
-
-		return mRT;
-	}
-
-	static perspective(fieldOfViewInRadians, aspectRatio, near, far) {
-		// Construct a perspective matrix
-
-		/*
-           Field of view - the angle in radians of what's in view along the Y axis
-           Aspect Ratio - the ratio of the canvas, typically canvas.width / canvas.height
-           Near - Anything before this point in the Z direction gets clipped (outside of the clip space)
-           Far - Anything after this point in the Z direction gets clipped (outside of the clip space)
-        */
-
-		var f = 1.0 / Math.tan(fieldOfViewInRadians / 2);
-		var rangeInv = 1 / (near - far);
-
-		return new Float32Array([
-			f / aspectRatio,
-			0,
-			0,
-			0,
-			0,
-			f,
-			0,
-			0,
-			0,
-			0,
-			(near + far) * rangeInv,
-			-1,
-			0,
-			0,
-			near * far * rangeInv * 2,
-			0,
-		]);
+		this.projectionMatrix = perspective(this.yFOV, this.aspectRatio, this.near, this.far);
 	}
 
 	static setCameraPosition(x, y, z) {

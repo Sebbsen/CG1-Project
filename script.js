@@ -50,7 +50,6 @@ async function init() {
 	// await sceneGraph.init("./sceneGraphSolarSystemDemo.json");
 	// await sceneGraph.init("./sceneGraph.json");
 	await sceneGraph.init("./sceneGraphDemoSzene.json");
-	console.log(sceneGraph);
 
 	const pickableObjects = sceneGraph.pickableObjects;
 
@@ -92,14 +91,21 @@ async function init() {
 		// KONTINUIERLICHE ANIMATIONEN
 		if (solarSystem) {
 			const startRotY = solarSystem.rotation;
-			const endRotY = [startRotY[0], startRotY[1] - 1, startRotY[2]];
+			const endRotY = [startRotY[0], startRotY[1] - 10, startRotY[2]];
 			solarSystem.animateRotationPerFrame(startRotY, endRotY);
 		}
 		
 		if (earthGroup) {
 			const startRotY = earthGroup.rotation;
-			const endRotY = [startRotY[0], startRotY[1] - 1, startRotY[2]];
+			const endRotY = [startRotY[0], startRotY[1] - 50, startRotY[2]];
 			earthGroup.animateRotationPerFrame(startRotY, endRotY);
+		}
+
+		const testObject = sceneGraph.allObjects.find((object) => object.name === "Test");
+		if (testObject) {
+			const startRotY = testObject.rotation;
+			const endRotY = [startRotY[0], startRotY[1] + 10, startRotY[2]];
+			testObject.animateRotationPerFrame(startRotY, endRotY);
 		}
 
 		sceneGraph.draw();
