@@ -1,5 +1,4 @@
 import { identity, translateMatrix, rotateX, rotateY, rotateZ, scaleMatrix } from "./matrix-functions/matFunctions.js";
-import {Mat4} from "./mat4.js";
 
 export class Transformation {
 	constructor(type, x, y, z) {
