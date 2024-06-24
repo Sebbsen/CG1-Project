@@ -10,6 +10,7 @@ export class Group {
         this.children = [];
     }
 
+	// Füge der Gruppe ein Kind hinzu
     addChild(child) {
         if (child instanceof GameObject || child instanceof Group) {
             this.children.push(child);
@@ -18,6 +19,7 @@ export class Group {
         }
     }
 
+	// Animiere die Translation kontinuierlich
     animateTranslationPerFrame(from, to) {
 		// Differenz berechnen
 		const deltaX = to[0] - from[0];
@@ -31,6 +33,7 @@ export class Group {
 		this.translation = [currentX, currentY, currentZ]; // setzen der neuen Translation
 	}
     
+	// Animiere die Rotation kontinuierlich
     animateRotationPerFrame(from, to) {
 		// Differenz berechnen
 		const deltaX = to[0] - from[0];
@@ -44,7 +47,8 @@ export class Group {
 		this.rotation = [currentX, currentY, currentZ]; // setzen der neuen Rotation
 	}
     
-    animateRScalePerFrame(from, to) {
+	// Animiere die Skalierung kontinuierlich
+    animateScalePerFrame(from, to) {
 		// Differenz berechnen
 		const deltaX = to[0] - from[0];
 		const deltaY = to[1] - from[1];
